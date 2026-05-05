@@ -1,0 +1,28 @@
+{
+  "name": "iqo-agentic-app",
+  "version": "0.1.0",
+  "private": true,
+  "description": "iQo Agentic App — Plateforme de pilotage des agents IA",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,css,json}\" --ignore-path .gitignore"
+  },
+  "dependencies": {
+    "next": "14.2.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.5",
+    "prettier": "^3.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
