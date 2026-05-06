@@ -1,9 +1,51 @@
-'use client'
-
 import { useState, useRef } from "react";
 
 const SF = "-apple-system,'SF Pro Display','SF Pro Text',BlinkMacSystemFont,'Segoe UI',sans-serif";
 const ACCENT = "#4F46E5";
+const IQO_GREEN = "#6DBE45";
+
+// ─── IqoLogo — SVG inline, no external file dependency ───────────────────────
+// variant: "full" (icon + wordmark) | "mark" (icon + "iQo") | "icon" (mark only)
+// size: icon height in px · onDark: true = grey letterforms for light backgrounds
+function IqoLogo({ variant = "full", size = 32, onDark = false }) {
+  const fg = onDark ? "#D1D5DB" : "#374151";
+  const Icon = () => (
+    <svg width={size} height={size} viewBox="0 0 40 40" fill="none"
+         xmlns="http://www.w3.org/2000/svg" style={{ flexShrink:0 }}>
+      {/* i — dot + stem */}
+      <rect x="3"  y="4"  width="4" height="3"  rx="1"   fill={fg} />
+      <rect x="3"  y="10" width="4" height="14" rx="1"   fill={fg} />
+      {/* Q — large circle */}
+      <circle cx="20" cy="17" r="9"  stroke={fg} strokeWidth="4" />
+      {/* o — small circle right */}
+      <circle cx="33" cy="17" r="5"  stroke={fg} strokeWidth="3.5" />
+      {/* green bar — brand accent */}
+      <rect x="18" y="13" width="4" height="10" rx="1.5" fill={IQO_GREEN} />
+    </svg>
+  );
+  if (variant === "icon") return <Icon />;
+  if (variant === "mark") return (
+    <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+      <Icon />
+      <span style={{ fontFamily:SF, fontSize:size*0.56, fontWeight:700, color:fg,
+                     letterSpacing:"-0.03em", lineHeight:1, userSelect:"none" }}>iQo</span>
+    </div>
+  );
+  // "full" — icon + two-line wordmark
+  return (
+    <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+      <Icon />
+      <div style={{ display:"flex", flexDirection:"column", lineHeight:1, userSelect:"none" }}>
+        <span style={{ fontFamily:SF, fontSize:size*0.5, fontWeight:700, color:fg,
+                       letterSpacing:"-0.02em" }}>iQo</span>
+        <span style={{ fontFamily:SF, fontSize:size*0.34, fontWeight:500,
+                       color:onDark?"#9CA3AF":"#6B7280", letterSpacing:"0.02em", marginTop:1 }}>
+          Agentic <span style={{ color:IQO_GREEN, fontWeight:700 }}>AI</span>
+        </span>
+      </div>
+    </div>
+  );
+}
 
 const AVATAR_MAP = {
   "Marketing Agent":"📣","Market Intelligence Agent":"📡","Content Agent":"✍️","Campaign Monitor":"📡",
@@ -769,10 +811,10 @@ function AccueilScreen({ agents, fil, onAgent, onFil, setActiveTab }) {
 
         {/* ── Recommandation du jour ── */}
         <div style={{ background:"linear-gradient(135deg,#4F46E5 0%,#7C3AED 60%,#6366F1 100%)", borderRadius:18, padding:"16px", marginBottom:16, position:"relative", overflow:"hidden" }}>
-          {/* Sparkle decorations */}
-          <div style={{ position:"absolute", top:10, right:14, fontSize:22, opacity:0.6 }}>✦</div>
-          <div style={{ position:"absolute", bottom:14, right:44, fontSize:14, opacity:0.3 }}>✦</div>
-          <div style={{ position:"absolute", top:30, right:40, fontSize:10, opacity:0.25 }}>✦</div>
+          {/* Logo watermark top-right */}
+          <div style={{ position:"absolute", top:12, right:14, opacity:0.25 }}>
+            <IqoLogo variant="icon" size={36} onDark={true} />
+          </div>
           <div style={{ fontFamily:SF, fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.6)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:8 }}>Recommandation du jour</div>
           <div style={{ fontFamily:SF, fontSize:14, fontWeight:600, color:"#fff", lineHeight:1.5, marginBottom:12, paddingRight:32 }}>
             EDF prend du retard sur la revue d'architecture. Relancez le Consulting Assistant pour débloquer.
@@ -2299,7 +2341,7 @@ function DeskAccueil({ agents, fil, setActiveTab, onAgent, onFil }) {
     <div style={{ flex:1, overflowY:"auto", padding:"28px 32px" }}>
       <div style={{ marginBottom:24 }}>
         <h1 style={{ fontFamily:SF, fontSize:24, fontWeight:700, color:"#111827", margin:"0 0 4px", letterSpacing:"-0.03em" }}>Bonjour Romain 👋</h1>
-        <p style={{ fontFamily:SF, fontSize:14, color:"#6B7280", margin:0 }}>Voici votre vue d'ensemble du SI agentique iQo.</p>
+        <p style={{ fontFamily:SF, fontSize:14, color:"#6B7280", margin:0 }}>Voici votre vue d'ensemble de votre SI Agentique.</p>
       </div>
 
       {/* KPI row */}
@@ -2409,8 +2451,8 @@ function DeskAccueil({ agents, fil, setActiveTab, onAgent, onFil }) {
 
       {/* IA recommendation banner */}
       <div style={{ background:"linear-gradient(135deg,#4F46E5,#7C3AED 60%,#6366F1)", borderRadius:14, padding:"18px 24px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-        <div style={{ display:"flex", alignItems:"center", gap:14 }}>
-          <div style={{ fontSize:28 }}>✦</div>
+        <div style={{ display:"flex", alignItems:"center", gap:16 }}>
+          <IqoLogo variant="icon" size={40} onDark={true} />
           <div>
             <div style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"rgba(255,255,255,0.65)", letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:4 }}>Recommandation du jour</div>
             <div style={{ fontFamily:SF, fontSize:15, fontWeight:600, color:"#fff", lineHeight:1.4 }}>EDF Architecture SI prend du retard sur la revue d'architecture. Relancez le Consulting Assistant pour débloquer la prochaine étape.</div>
@@ -2881,9 +2923,11 @@ function DesktopApp({ activeTab, setActiveTab, agents, setAgents, fil, setFil, f
       {/* Sidebar */}
       <div style={{ width:sidebarCollapsed?64:200, background:"#fff", borderRight:"0.5px solid #E5E7EB", display:"flex", flexDirection:"column", flexShrink:0, transition:"width 0.2s cubic-bezier(0.4,0,0.2,1)", overflow:"hidden" }}>
         {/* Logo */}
-        <div style={{ height:56, display:"flex", alignItems:"center", padding:"0 16px", gap:10, borderBottom:"0.5px solid #F3F4F6", flexShrink:0 }}>
-          <div style={{ width:28, height:28, borderRadius:8, background:`linear-gradient(135deg,${ACCENT},#7C3AED)`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:SF, fontSize:13, fontWeight:800, color:"#fff", flexShrink:0 }}>iQ</div>
-          {!sidebarCollapsed && <span style={{ fontFamily:SF, fontSize:15, fontWeight:700, color:"#111827", letterSpacing:"-0.02em", whiteSpace:"nowrap" }}>iQo Agentic</span>}
+        <div style={{ height:56, display:"flex", alignItems:"center", padding:"0 14px", borderBottom:"0.5px solid #F3F4F6", flexShrink:0, overflow:"hidden" }}>
+          {sidebarCollapsed
+            ? <IqoLogo variant="icon" size={28} />
+            : <IqoLogo variant="full" size={28} />
+          }
         </div>
         {/* Nav items */}
         <div style={{ flex:1, overflowY:"auto", padding:"8px 0" }}>
