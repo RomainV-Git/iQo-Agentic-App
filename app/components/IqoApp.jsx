@@ -1209,13 +1209,18 @@ function FilScreen({ fil, setFil, onAction }) {
                       <div style={{ flex:1, padding:"13px 13px" }}>
                         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:6 }}>
                           <div style={{ flex:1, minWidth:0 }}>
-                            <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:3 }}>
-                              <AgentIcon name={item.agent} dept={item.dept} size={22} />
-                              <span style={{ fontFamily:SF, fontSize:13, fontWeight:600, color:"#111827" }}>{item.agent}</span>
+                            {/* Primary: what needs to be done — context + action */}
+                            <div style={{ fontFamily:SF, fontSize:14, fontWeight:600, color:"#111827", marginBottom:3, lineHeight:1.35 }}>
+                              {item.context} — {item.msg}
+                            </div>
+                            {/* Secondary: who produced it + service */}
+                            <div style={{ display:"flex", alignItems:"center", gap:5, marginBottom:5 }}>
+                              <AgentIcon name={item.agent} dept={item.dept} size={16} />
+                              <span style={{ fontFamily:SF, fontSize:12, color:"#9CA3AF" }}>{item.agent}</span>
                               <DeptTag dept={item.dept} />
                             </div>
-                            <div style={{ fontFamily:SF, fontSize:14, fontWeight:600, color:"#111827", marginBottom:2 }}>{item.msg}</div>
-                            <div style={{ fontFamily:SF, fontSize:13, color:"#6B7280", lineHeight:1.4, marginBottom:6 }}>{item.detail.slice(0,80)}…</div>
+                            {/* Detail */}
+                            <div style={{ fontFamily:SF, fontSize:13, color:"#6B7280", lineHeight:1.4, marginBottom:6 }}>{item.detail.slice(0,90)}…</div>
                             {item.file && <div style={{ display:"flex", alignItems:"center", gap:5 }}><ExtBadge filename={item.file} /><span style={{ fontFamily:SF, fontSize:12, color:"#6B7280" }}>{item.file}</span></div>}
                           </div>
                           <div style={{ textAlign:"right", flexShrink:0, marginLeft:10 }}>
@@ -2962,14 +2967,23 @@ function DeskFil({ fil, setFil, onAction }) {
               <div style={{ flex:1, padding:"16px 20px", display:"flex", alignItems:"center", gap:16 }}>
                 <AgentIcon name={item.agent} dept={item.dept} size={40}/>
                 <div style={{ flex:1, minWidth:0 }}>
-                  <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
-                    <span style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:p.color, background:p.bg, borderRadius:6, padding:"2px 8px" }}>{p.label}</span>
-                    <span style={{ fontFamily:SF, fontSize:13, fontWeight:600, color:"#111827" }}>{item.msg}</span>
-                    <DeptTag dept={item.dept}/>
+                  {/* Primary: context + what to do */}
+                  <div style={{ display:"flex", alignItems:"baseline", gap:8, marginBottom:4, flexWrap:"wrap" }}>
+                    <span style={{ fontFamily:SF, fontSize:15, fontWeight:700, color:"#111827" }}>
+                      {item.context}
+                    </span>
+                    <span style={{ fontFamily:SF, fontSize:13, color:p.color, fontWeight:600 }}>— {item.msg}</span>
+                    <span style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:p.color, background:p.bg, borderRadius:6, padding:"2px 7px" }}>{p.label}</span>
                   </div>
-                  <div style={{ fontFamily:SF, fontSize:13, color:"#6B7280", lineHeight:1.4, marginBottom:4 }}>{item.detail.slice(0,120)}…</div>
-                  <div style={{ display:"flex", gap:12 }}>
-                    <span style={{ fontFamily:SF, fontSize:12, color:"#9CA3AF" }}>Agent : {item.agent}</span>
+                  {/* Detail */}
+                  <div style={{ fontFamily:SF, fontSize:13, color:"#6B7280", lineHeight:1.45, marginBottom:6 }}>{item.detail.slice(0,140)}…</div>
+                  {/* Meta: agent, file, deadline */}
+                  <div style={{ display:"flex", gap:12, flexWrap:"wrap", alignItems:"center" }}>
+                    <span style={{ fontFamily:SF, fontSize:12, color:"#9CA3AF", display:"flex", alignItems:"center", gap:4 }}>
+                      <AgentIcon name={item.agent} dept={item.dept} size={14}/>
+                      {item.agent}
+                    </span>
+                    <DeptTag dept={item.dept}/>
                     {item.file && <span style={{ fontFamily:SF, fontSize:12, color:"#9CA3AF" }}>📎 {item.file}</span>}
                     {item.deadline && <span style={{ fontFamily:SF, fontSize:12, color:"#EF4444", fontWeight:600 }}>⏱ {item.deadline}</span>}
                   </div>
@@ -3494,9 +3508,9 @@ function ChatScreen({ agents }) {
             </div>
           )}
 
-          <div style={{ background:"#F3F4F6", borderRadius:14, overflow:"hidden" }}>
+          <div style={{ background:"#F3F4F6", borderRadius:14, overflow:"visible", position:"relative" }}>
             {/* Toolbar */}
-            <div style={{ display:"flex", alignItems:"center", gap:4, padding:"8px 12px 0", position:"relative" }}>
+            <div style={{ display:"flex", alignItems:"center", gap:4, padding:"8px 12px 0", position:"relative", borderRadius:"14px 14px 0 0", overflow:"visible" }}>
               {/* Attach */}
               <button onClick={()=>setAttachments(prev=>[...prev,`Document_${prev.length+1}.pdf`])}
                 style={{ width:30, height:30, borderRadius:8, background:"transparent", border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", color:"#6B7280" }} title="Joindre un fichier">
@@ -3514,22 +3528,25 @@ function ChatScreen({ agents }) {
                   🔗 {selSources.length} connecteur{selSources.length>1?"s":""}
                 </button>
                 {showSettings==="connectors" && (
-                  <div style={{ position:"absolute", bottom:"calc(100% + 8px)", left:0, background:"#fff", borderRadius:12, boxShadow:"0 8px 30px rgba(0,0,0,0.12)", border:"0.5px solid #E5E7EB", padding:"8px", minWidth:220, zIndex:100 }}>
-                    <div style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em", padding:"4px 8px 8px" }}>Connecteurs actifs</div>
-                    {ALL_SOURCES.map(s=>(
-                      <div key={s.id} onClick={()=>toggleSource(s.id)}
-                        style={{ display:"flex", alignItems:"center", gap:9, padding:"8px 8px", borderRadius:8, cursor:"pointer", background:selSources.includes(s.id)?`${ACCENT}08`:"transparent" }}>
-                        <div style={{ width:18, height:18, borderRadius:4, border:`1.5px solid ${selSources.includes(s.id)?ACCENT:"#D1D5DB"}`, background:selSources.includes(s.id)?ACCENT:"transparent", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, transition:"all 0.15s" }}>
-                          {selSources.includes(s.id)&&<svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                  <>
+                    <div onClick={()=>setShowSettings(false)} style={{ position:"fixed", inset:0, zIndex:9998 }}/>
+                    <div style={{ position:"absolute", bottom:"calc(100% + 8px)", left:0, background:"#fff", borderRadius:12, boxShadow:"0 8px 30px rgba(0,0,0,0.18)", border:"0.5px solid #E5E7EB", padding:"8px", minWidth:220, zIndex:9999 }}>
+                      <div style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em", padding:"4px 8px 8px" }}>Connecteurs actifs</div>
+                      {ALL_SOURCES.map(s=>(
+                        <div key={s.id} onClick={()=>toggleSource(s.id)}
+                          style={{ display:"flex", alignItems:"center", gap:9, padding:"8px 8px", borderRadius:8, cursor:"pointer", background:selSources.includes(s.id)?`${ACCENT}08`:"transparent" }}>
+                          <div style={{ width:18, height:18, borderRadius:4, border:`1.5px solid ${selSources.includes(s.id)?ACCENT:"#D1D5DB"}`, background:selSources.includes(s.id)?ACCENT:"transparent", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, transition:"all 0.15s" }}>
+                            {selSources.includes(s.id)&&<svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                          </div>
+                          <span style={{ fontSize:16 }}>{s.icon}</span>
+                          <div style={{ flex:1 }}>
+                            <div style={{ fontFamily:SF, fontSize:13, color:"#111827" }}>{s.name}</div>
+                            <div style={{ fontFamily:SF, fontSize:10, color:"#9CA3AF" }}>{s.type}</div>
+                          </div>
                         </div>
-                        <span style={{ fontSize:16 }}>{s.icon}</span>
-                        <div style={{ flex:1 }}>
-                          <div style={{ fontFamily:SF, fontSize:13, color:"#111827" }}>{s.name}</div>
-                          <div style={{ fontFamily:SF, fontSize:10, color:"#9CA3AF" }}>{s.type}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  </>
                 )}
               </div>
               {/* Model dropdown */}
@@ -3541,21 +3558,24 @@ function ChatScreen({ agents }) {
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke={model.color} strokeWidth="2" strokeLinecap="round"/></svg>
                 </button>
                 {showSettings==="model" && (
-                  <div style={{ position:"absolute", bottom:"calc(100% + 8px)", right:0, background:"#fff", borderRadius:12, boxShadow:"0 8px 30px rgba(0,0,0,0.12)", border:"0.5px solid #E5E7EB", padding:"8px", minWidth:240, zIndex:100 }}>
-                    <div style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em", padding:"4px 8px 8px" }}>Modèle</div>
-                    {MODELS.map(m=>(
-                      <div key={m.id} onClick={()=>{ setSelModel(m.id); setShowSettings(false); }}
-                        style={{ display:"flex", alignItems:"center", gap:10, padding:"9px 8px", borderRadius:8, cursor:"pointer", background:selModel===m.id?`${ACCENT}08`:"transparent", border:selModel===m.id?`1px solid ${ACCENT}20`:"1px solid transparent", marginBottom:2 }}>
-                        <div style={{ width:10, height:10, borderRadius:"50%", background:m.color, flexShrink:0 }}/>
-                        <div style={{ flex:1 }}>
-                          <div style={{ fontFamily:SF, fontSize:13, fontWeight:selModel===m.id?600:400, color:selModel===m.id?ACCENT:"#111827" }}>{m.label}</div>
-                          <div style={{ fontFamily:SF, fontSize:11, color:"#9CA3AF" }}>{m.provider}</div>
+                  <>
+                    <div onClick={()=>setShowSettings(false)} style={{ position:"fixed", inset:0, zIndex:9998 }}/>
+                    <div style={{ position:"absolute", bottom:"calc(100% + 8px)", right:0, background:"#fff", borderRadius:12, boxShadow:"0 8px 30px rgba(0,0,0,0.18)", border:"0.5px solid #E5E7EB", padding:"8px", minWidth:240, zIndex:9999 }}>
+                      <div style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em", padding:"4px 8px 8px" }}>Modèle</div>
+                      {MODELS.map(m=>(
+                        <div key={m.id} onClick={()=>{ setSelModel(m.id); setShowSettings(false); }}
+                          style={{ display:"flex", alignItems:"center", gap:10, padding:"9px 8px", borderRadius:8, cursor:"pointer", background:selModel===m.id?`${ACCENT}08`:"transparent", border:selModel===m.id?`1px solid ${ACCENT}20`:"1px solid transparent", marginBottom:2 }}>
+                          <div style={{ width:10, height:10, borderRadius:"50%", background:m.color, flexShrink:0 }}/>
+                          <div style={{ flex:1 }}>
+                            <div style={{ fontFamily:SF, fontSize:13, fontWeight:selModel===m.id?600:400, color:selModel===m.id?ACCENT:"#111827" }}>{m.label}</div>
+                            <div style={{ fontFamily:SF, fontSize:11, color:"#9CA3AF" }}>{m.provider}</div>
+                          </div>
+                          {m.badge && <span style={{ fontFamily:SF, fontSize:9, fontWeight:700, color:m.color, background:m.color+"14", borderRadius:5, padding:"2px 6px" }}>{m.badge}</span>}
+                          {selModel===m.id && <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke={ACCENT} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
                         </div>
-                        {m.badge && <span style={{ fontFamily:SF, fontSize:9, fontWeight:700, color:m.color, background:m.color+"14", borderRadius:5, padding:"2px 6px" }}>{m.badge}</span>}
-                        {selModel===m.id && <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke={ACCENT} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  </>
                 )}
               </div>
             </div>
