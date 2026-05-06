@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const SF = "-apple-system,'SF Pro Display','SF Pro Text',BlinkMacSystemFont,'Segoe UI',sans-serif";
 const ACCENT = "#4F46E5";
@@ -75,13 +75,12 @@ const OWNERS = [
 ];
 
 const ALL_SOURCES = [
-  { id:"f1", name:"Microsoft SharePoint", icon:"📁", status:"ok",    type:"Connecteur", scope:"generic", desc:"Documents et fichiers iQo"            },
-  { id:"f2", name:"Google Drive",         icon:"📁", status:"ok",    type:"Connecteur", scope:"generic", desc:"Drive partagé iQo"                     },
-  { id:"f3", name:"Microsoft OneDrive",   icon:"📁", status:"ok",    type:"Connecteur", scope:"project", desc:"Espace projet client"                  },
-  { id:"f4", name:"Confluence",           icon:"📄", status:"warn",  type:"Connecteur", scope:"project", desc:"Wiki et documentation projet"          },
-  { id:"f5", name:"Salesforce",           icon:"☁️", status:"ok",    type:"Connecteur", scope:"project", desc:"CRM et données client"                 },
-  { id:"f6", name:"HubSpot",              icon:"🔶", status:"error", type:"Connecteur", scope:"project", desc:"Marketing automation"                  },
-  { id:"f7", name:"Données internes iQo", icon:"🗄️", status:"ok",   type:"Interne",    scope:"generic", desc:"Base de connaissances et templates iQo" },
+  { id:"f1", name:"Microsoft SharePoint", icon:"📁", status:"ok",   type:"Connecteur", scope:"generic", desc:"Documents et fichiers iQo"          },
+  { id:"f2", name:"Microsoft Outlook",    icon:"📧", status:"ok",   type:"Connecteur", scope:"generic", desc:"Emails et calendriers iQo"           },
+  { id:"f3", name:"Microsoft Teams",      icon:"💬", status:"ok",   type:"Connecteur", scope:"generic", desc:"Messagerie et réunions iQo"          },
+  { id:"f4", name:"iQo CRM",             icon:"🎯", status:"ok",   type:"Interne",    scope:"project", desc:"Gestion de la relation client iQo"   },
+  { id:"f5", name:"iQo Finance",          icon:"📊", status:"warn", type:"Interne",    scope:"project", desc:"Pilotage financier et budgets iQo"   },
+  { id:"f6", name:"iQo Recrutement",      icon:"👥", status:"ok",   type:"Interne",    scope:"project", desc:"Gestion des candidatures et RH iQo" },
 ];
 
 const EXT_COLOR = { pptx:"#F97316", docx:"#0EA5E9", xlsx:"#10B981", html:"#7C3AED", md:"#6B7280", pdf:"#EF4444" };
@@ -2461,63 +2460,241 @@ function DeskAccueil({ agents, fil, setActiveTab, onAgent, onFil }) {
 }
 
 function DeskProjets({ agents, onAgent }) {
-  const [search, setSearch] = useState("");
+  const [search,   setSearch]   = useState("");
+  const [selProj,  setSelProj]  = useState(null);
+  const [openChat, setOpenChat] = useState(false);
+  const [chatInput,  setChatInput]  = useState("");
+  const [chatMessages, setChatMessages] = useState([
+    { id:1, from:"agent", agentId:"co-1", agentName:"Intel Watcher", text:"Bonjour Romain. Tout avance conformément au plan. Un point d'attention sur la revue d'architecture cible.", time:"10:30" },
+  ]);
+
   const allAgents = Object.values(agents).flat();
   const shown = INIT_PROJETS.filter(p=>!search||p.name.toLowerCase().includes(search.toLowerCase())||p.client.toLowerCase().includes(search.toLowerCase()));
 
+  const sendMsg = (proj) => {
+    if(!chatInput.trim()) return;
+    const userMsg = { id:Date.now(), from:"user", text:chatInput.trim(), time:"Maintenant" };
+    setChatMessages(prev=>[...prev, userMsg]);
+    setChatInput("");
+    setTimeout(()=>{
+      const respAgent = allAgents.find(a=>proj.agents.includes(a.id));
+      setChatMessages(prev=>[...prev, { id:Date.now()+1, from:"agent", agentId:respAgent?.id, agentName:respAgent?.name||"Agent", text:"Bien reçu. Je traite votre demande et vous reviens rapidement.", time:"Maintenant" }]);
+    }, 1000);
+  };
+
   return (
-    <div style={{ flex:1, overflowY:"auto", padding:"28px 32px" }}>
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:22 }}>
-        <h1 style={{ fontFamily:SF, fontSize:22, fontWeight:700, color:"#111827", margin:0, letterSpacing:"-0.02em" }}>Projets</h1>
-        <button style={{ background:ACCENT, color:"#fff", border:"none", borderRadius:10, padding:"9px 18px", fontFamily:SF, fontSize:13, fontWeight:600, cursor:"pointer" }}>+ Nouveau projet</button>
-      </div>
-      {/* Filters */}
-      <div style={{ display:"flex", gap:10, marginBottom:16 }}>
-        <div style={{ flex:1, background:"#fff", borderRadius:10, padding:"8px 14px", display:"flex", alignItems:"center", gap:8, border:"0.5px solid #E5E7EB" }}>
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="6.5" stroke="#9CA3AF" strokeWidth="1.8"/><path d="M13.5 13.5L18 18" stroke="#9CA3AF" strokeWidth="1.8" strokeLinecap="round"/></svg>
-          <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Rechercher un projet, un client…" style={{ border:"none", outline:"none", fontFamily:SF, fontSize:13, color:"#111827", background:"transparent", flex:1 }}/>
+    <div style={{ flex:1, display:"flex", overflow:"hidden" }}>
+      {/* Main list */}
+      <div style={{ flex:1, overflowY:"auto", padding:"28px 32px" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:22 }}>
+          <h1 style={{ fontFamily:SF, fontSize:22, fontWeight:700, color:"#111827", margin:0, letterSpacing:"-0.02em" }}>Projets</h1>
+          <button style={{ background:ACCENT, color:"#fff", border:"none", borderRadius:10, padding:"9px 18px", fontFamily:SF, fontSize:13, fontWeight:600, cursor:"pointer" }}>+ Nouveau projet</button>
         </div>
-        {["Statut ▾","Client ▾","Responsable ▾","Plus de filtres ▾"].map(f=>(
-          <button key={f} style={{ background:"#fff", border:"0.5px solid #E5E7EB", borderRadius:10, padding:"8px 14px", fontFamily:SF, fontSize:13, color:"#374151", cursor:"pointer", whiteSpace:"nowrap" }}>{f}</button>
-        ))}
-      </div>
-      {/* Table */}
-      <div style={{ background:"#fff", borderRadius:14, boxShadow:"0 1px 3px rgba(0,0,0,0.06)", overflow:"hidden" }}>
-        <div style={{ display:"grid", gridTemplateColumns:"2fr 1fr 1.5fr 1fr 1fr 1fr", gap:0, padding:"10px 20px", borderBottom:"0.5px solid #F3F4F6", background:"#F9FAFB" }}>
-          {["Projet","Client","Avancement","Statut","Responsable","Échéance"].map(h=>(
-            <div key={h} style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em" }}>{h}</div>
+        <div style={{ display:"flex", gap:10, marginBottom:16 }}>
+          <div style={{ flex:1, background:"#fff", borderRadius:10, padding:"8px 14px", display:"flex", alignItems:"center", gap:8, border:"0.5px solid #E5E7EB" }}>
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="6.5" stroke="#9CA3AF" strokeWidth="1.8"/><path d="M13.5 13.5L18 18" stroke="#9CA3AF" strokeWidth="1.8" strokeLinecap="round"/></svg>
+            <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Rechercher un projet, un client…" style={{ border:"none", outline:"none", fontFamily:SF, fontSize:13, color:"#111827", background:"transparent", flex:1 }}/>
+          </div>
+          {["Statut ▾","Client ▾","Responsable ▾"].map(f=>(
+            <button key={f} style={{ background:"#fff", border:"0.5px solid #E5E7EB", borderRadius:10, padding:"8px 14px", fontFamily:SF, fontSize:13, color:"#374151", cursor:"pointer", whiteSpace:"nowrap" }}>{f}</button>
           ))}
         </div>
-        {shown.map((p,i)=>{
-          const badge = p.travaux.blocked>0?{l:"Bloqué",c:"#EF4444",bg:"#FEF2F2"} : p.travaux.late>2?{l:"En retard",c:"#F59E0B",bg:"#FEF3C7"} : p.travaux.risk>3?{l:"À risque",c:"#F97316",bg:"#FFF7ED"} : {l:"Sain",c:"#10B981",bg:"#DCFCE7"};
-          const owner = OWNERS.find(o=>o.id===p.owner)||OWNERS[0];
-          return (
-            <div key={p.id} style={{ display:"grid", gridTemplateColumns:"2fr 1fr 1.5fr 1fr 1fr 1fr", gap:0, padding:"13px 20px", borderBottom:i<shown.length-1?"0.5px solid #F3F4F6":"none", alignItems:"center", cursor:"pointer" }}>
-              <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                <div style={{ width:32, height:32, borderRadius:9, background:p.color+"18", display:"flex", alignItems:"center", justifyContent:"center", fontSize:17 }}>{p.logo}</div>
-                <div>
-                  <div style={{ fontFamily:SF, fontSize:13, fontWeight:600, color:"#111827" }}>{p.name}</div>
-                  <div style={{ fontFamily:SF, fontSize:11, color:"#9CA3AF", marginTop:1 }}>{allAgents.filter(a=>p.agents.includes(a.id)).length} agents · {p.travaux.total} travaux</div>
+        <div style={{ background:"#fff", borderRadius:14, boxShadow:"0 1px 3px rgba(0,0,0,0.06)", overflow:"hidden" }}>
+          <div style={{ display:"grid", gridTemplateColumns:"2fr 1fr 1.5fr 1fr 1fr 1fr 120px", gap:0, padding:"10px 20px", borderBottom:"0.5px solid #F3F4F6", background:"#F9FAFB" }}>
+            {["Projet","Client","Avancement","Statut","Responsable","Échéance",""].map(h=>(
+              <div key={h} style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em" }}>{h}</div>
+            ))}
+          </div>
+          {shown.map((p,i)=>{
+            const badge = p.travaux.blocked>0?{l:"Bloqué",c:"#EF4444",bg:"#FEF2F2"} : p.travaux.late>2?{l:"En retard",c:"#F59E0B",bg:"#FEF3C7"} : p.travaux.risk>3?{l:"À risque",c:"#F97316",bg:"#FFF7ED"} : {l:"Sain",c:"#10B981",bg:"#DCFCE7"};
+            const owner = OWNERS.find(o=>o.id===p.owner)||OWNERS[0];
+            const isSelected = selProj?.id===p.id;
+            const pAgents = allAgents.filter(a=>p.agents.includes(a.id));
+            return (
+              <div key={p.id} style={{ display:"grid", gridTemplateColumns:"2fr 1fr 1.5fr 1fr 1fr 1fr 120px", gap:0, padding:"13px 20px", borderBottom:i<shown.length-1?"0.5px solid #F3F4F6":"none", alignItems:"center", cursor:"pointer", background:isSelected?`${ACCENT}06`:"transparent", transition:"background 0.15s" }}
+                onClick={()=>{ setSelProj(isSelected?null:p); setOpenChat(false); setChatMessages([{ id:1, from:"agent", agentId:p.agents[0], agentName:"Agent", text:`Bonjour Romain. Tout avance sur ${p.name}. Prochaine étape : ${p.nextStep}.`, time:"Maintenant" }]); }}>
+                <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                  {isSelected && <div style={{ width:3, height:36, background:ACCENT, borderRadius:2, marginLeft:-8, flexShrink:0 }}/>}
+                  <div style={{ width:32, height:32, borderRadius:9, background:p.color+"18", display:"flex", alignItems:"center", justifyContent:"center", fontSize:17, flexShrink:0 }}>{p.logo}</div>
+                  <div>
+                    <div style={{ fontFamily:SF, fontSize:13, fontWeight:600, color:isSelected?ACCENT:"#111827" }}>{p.name}</div>
+                    <div style={{ fontFamily:SF, fontSize:11, color:"#9CA3AF", marginTop:1 }}>{allAgents.filter(a=>p.agents.includes(a.id)).length} agents · {p.travaux.total} travaux</div>
+                  </div>
                 </div>
-              </div>
-              <div style={{ fontFamily:SF, fontSize:13, color:"#374151" }}>{p.client}</div>
-              <div>
+                <div style={{ fontFamily:SF, fontSize:13, color:"#374151" }}>{p.client}</div>
                 <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                   <div style={{ flex:1, height:5, background:"#F3F4F6", borderRadius:3, overflow:"hidden" }}><div style={{ height:"100%", width:`${p.progress}%`, background:p.color, borderRadius:3 }}/></div>
                   <span style={{ fontFamily:SF, fontSize:12, fontWeight:700, color:p.color, flexShrink:0 }}>{p.progress}%</span>
                 </div>
+                <div><span style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:badge.c, background:badge.bg, borderRadius:7, padding:"3px 9px" }}>{badge.l}</span></div>
+                <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                  <div style={{ width:24, height:24, borderRadius:"50%", background:owner.color+"22", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:SF, fontSize:9, fontWeight:700, color:owner.color }}>{owner.initials}</div>
+                  <span style={{ fontFamily:SF, fontSize:12, color:"#374151" }}>{owner.name.split(" ")[0]}</span>
+                </div>
+                <div style={{ fontFamily:SF, fontSize:12, color:"#6B7280" }}>{p.deadline}</div>
+                {/* Chat + detail buttons */}
+                <div style={{ display:"flex", gap:6 }} onClick={e=>e.stopPropagation()}>
+                  <button onClick={()=>{ if(!isSelected){ setSelProj(p); setChatMessages([{ id:1, from:"agent", agentId:p.agents[0], agentName:"Agent", text:`Bonjour Romain. Tout avance sur ${p.name}. Prochaine étape : ${p.nextStep}.`, time:"Maintenant" }]); } setOpenChat(c=>!c); }}
+                    style={{ background:isSelected&&openChat?ACCENT:`${ACCENT}14`, color:isSelected&&openChat?"#fff":ACCENT, border:"none", borderRadius:7, padding:"5px 10px", fontFamily:SF, fontSize:11, fontWeight:600, cursor:"pointer", display:"flex", alignItems:"center", gap:4 }}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+                    Chat
+                  </button>
+                  <button onClick={()=>{ setSelProj(isSelected?null:p); setOpenChat(false); }}
+                    style={{ background:isSelected&&!openChat?ACCENT:`${ACCENT}14`, color:isSelected&&!openChat?"#fff":ACCENT, border:"none", borderRadius:7, padding:"5px 10px", fontFamily:SF, fontSize:11, fontWeight:600, cursor:"pointer" }}>
+                    Détail
+                  </button>
+                </div>
               </div>
-              <div><span style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:badge.c, background:badge.bg, borderRadius:7, padding:"3px 9px" }}>{badge.l}</span></div>
-              <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                <div style={{ width:24, height:24, borderRadius:"50%", background:owner.color+"22", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:SF, fontSize:9, fontWeight:700, color:owner.color }}>{owner.initials}</div>
-                <span style={{ fontFamily:SF, fontSize:12, color:"#374151" }}>{owner.name.split(" ")[0]}</span>
-              </div>
-              <div style={{ fontFamily:SF, fontSize:12, color:"#6B7280" }}>{p.deadline}</div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
+        <div style={{ fontFamily:SF, fontSize:12, color:"#9CA3AF", marginTop:10 }}>1–{shown.length} sur {INIT_PROJETS.length} projets</div>
       </div>
-      <div style={{ fontFamily:SF, fontSize:12, color:"#9CA3AF", marginTop:10 }}>1–{shown.length} sur {INIT_PROJETS.length} projets</div>
+
+      {/* Side panel — project detail or chat */}
+      {selProj && (
+        <div style={{ width:400, borderLeft:"0.5px solid #E5E7EB", background:"#fff", display:"flex", flexDirection:"column", flexShrink:0, animation:"slideInRight 0.2s ease" }}>
+          {/* Panel header */}
+          <div style={{ padding:"20px 20px 0", borderBottom:"0.5px solid #F3F4F6", flexShrink:0 }}>
+            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                <div style={{ width:32, height:32, borderRadius:9, background:selProj.color+"18", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}>{selProj.logo}</div>
+                <div>
+                  <div style={{ fontFamily:SF, fontSize:14, fontWeight:700, color:"#111827" }}>{selProj.name}</div>
+                  <div style={{ fontFamily:SF, fontSize:11, color:"#9CA3AF" }}>{selProj.client}</div>
+                </div>
+              </div>
+              <button onClick={()=>setSelProj(null)} style={{ background:"none", border:"none", cursor:"pointer", color:"#9CA3AF", fontSize:20, lineHeight:1 }}>×</button>
+            </div>
+            {/* Tab toggle */}
+            <div style={{ display:"flex", gap:0 }}>
+              {["Détail","Chat équipe"].map(t=>{
+                const active = (t==="Chat équipe")===openChat;
+                return <button key={t} onClick={()=>setOpenChat(t==="Chat équipe")} style={{ fontFamily:SF, fontSize:13, fontWeight:active?600:400, color:active?ACCENT:"#6B7280", background:"none", border:"none", cursor:"pointer", padding:"8px 12px", borderBottom:active?`2px solid ${ACCENT}`:"2px solid transparent" }}>{t}</button>;
+              })}
+            </div>
+          </div>
+
+          {/* Detail tab */}
+          {!openChat && (
+            <div style={{ flex:1, overflowY:"auto", padding:"16px 20px" }}>
+              {/* Progress */}
+              <div style={{ background:`${selProj.color}10`, borderRadius:12, padding:"14px", marginBottom:14 }}>
+                <div style={{ display:"flex", justifyContent:"space-between", marginBottom:8 }}>
+                  <span style={{ fontFamily:SF, fontSize:12, color:"#6B7280" }}>Avancement global</span>
+                  <span style={{ fontFamily:SF, fontSize:14, fontWeight:700, color:selProj.color }}>{selProj.progress}%</span>
+                </div>
+                <div style={{ height:6, background:"rgba(0,0,0,0.1)", borderRadius:3, overflow:"hidden" }}>
+                  <div style={{ height:"100%", width:`${selProj.progress}%`, background:selProj.color, borderRadius:3 }}/>
+                </div>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr", gap:0, marginTop:12 }}>
+                  {[{v:`${selProj.travaux.done}/${selProj.travaux.total}`,l:"Réalisés",c:"#374151"},{v:selProj.travaux.late,l:"Retard",c:selProj.travaux.late>0?"#F59E0B":"#9CA3AF"},{v:selProj.travaux.risk,l:"Risque",c:selProj.travaux.risk>0?"#F97316":"#9CA3AF"},{v:selProj.travaux.blocked,l:"Bloqués",c:selProj.travaux.blocked>0?"#EF4444":"#9CA3AF"}].map((k,i,arr)=>(
+                    <div key={k.l} style={{ textAlign:"center", borderRight:i<arr.length-1?`0.5px solid ${selProj.color}30`:"none" }}>
+                      <div style={{ fontFamily:SF, fontSize:18, fontWeight:700, color:k.c }}>{k.v}</div>
+                      <div style={{ fontFamily:SF, fontSize:10, color:"#9CA3AF", marginTop:2 }}>{k.l}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {/* Info */}
+              {[{l:"Prochaine étape",v:selProj.nextStep},{l:"Échéance",v:selProj.deadline},{l:"Période",v:selProj.period}].map(r=>(
+                <div key={r.l} style={{ display:"flex", justifyContent:"space-between", padding:"9px 0", borderBottom:"0.5px solid #F9FAFB" }}>
+                  <span style={{ fontFamily:SF, fontSize:12, color:"#9CA3AF" }}>{r.l}</span>
+                  <span style={{ fontFamily:SF, fontSize:12, fontWeight:500, color:"#111827", textAlign:"right", maxWidth:220 }}>{r.v}</span>
+                </div>
+              ))}
+              {/* Description */}
+              <div style={{ marginTop:14, fontFamily:SF, fontSize:13, color:"#6B7280", lineHeight:1.6 }}>{selProj.desc}</div>
+              {/* Travaux récents */}
+              <div style={{ marginTop:16 }}>
+                <div style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em", marginBottom:8 }}>Travaux en cours</div>
+                {selProj.travaux_list.filter(t=>t.status==="running").map(t=>{
+                  const a = Object.values(agents).flat().find(x=>x.id===t.agent)||{name:t.agent,dept:"consulting"};
+                  return (
+                    <div key={t.id} style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 0", borderBottom:"0.5px solid #F9FAFB" }}>
+                      <AgentIcon name={a.name} dept={a.dept} size={26}/>
+                      <div style={{ flex:1, minWidth:0 }}>
+                        <div style={{ fontFamily:SF, fontSize:12, fontWeight:500, color:"#111827" }}>{t.name}</div>
+                        <div style={{ height:3, background:"#F3F4F6", borderRadius:2, marginTop:4, overflow:"hidden" }}>
+                          <div style={{ height:"100%", width:`${t.progress}%`, background:selProj.color, borderRadius:2 }}/>
+                        </div>
+                      </div>
+                      <span style={{ fontFamily:SF, fontSize:12, fontWeight:700, color:selProj.color }}>{t.progress}%</span>
+                    </div>
+                  );
+                })}
+              </div>
+              {/* Activités */}
+              {selProj.activites.length>0 && (
+                <div style={{ marginTop:16 }}>
+                  <div style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em", marginBottom:8 }}>Activités récentes</div>
+                  {selProj.activites.map((a,i)=>{
+                    const icon={ok:"✅",warn:"⚠️",info:"ℹ️",comment:"💬"}[a.type]||"•";
+                    return (
+                      <div key={i} style={{ display:"flex", gap:8, padding:"7px 0", borderBottom:"0.5px solid #F9FAFB" }}>
+                        <span style={{ fontSize:13 }}>{icon}</span>
+                        <div style={{ flex:1 }}>
+                          <div style={{ fontFamily:SF, fontSize:12, fontWeight:500, color:"#111827" }}>{a.msg}</div>
+                          <div style={{ fontFamily:SF, fontSize:11, color:"#9CA3AF" }}>{a.detail}</div>
+                        </div>
+                        <span style={{ fontFamily:SF, fontSize:11, color:"#9CA3AF", flexShrink:0 }}>{a.time}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Chat tab */}
+          {openChat && (
+            <>
+              {/* Agent pills */}
+              <div style={{ padding:"10px 16px 8px", borderBottom:"0.5px solid #F3F4F6", display:"flex", gap:6, overflowX:"auto", flexShrink:0 }}>
+                {Object.values(agents).flat().filter(a=>selProj.agents.includes(a.id)).map(a=>{
+                  const d=DEPTS.find(x=>x.id===a.dept)||DEPTS[0];
+                  return <span key={a.id} style={{ fontFamily:SF, fontSize:11, fontWeight:600, color:d.color, background:d.light, borderRadius:20, padding:"3px 10px", whiteSpace:"nowrap", flexShrink:0 }}>{agentEmoji(a.name)} {a.name.split(" ")[0]}</span>;
+                })}
+              </div>
+              {/* Messages */}
+              <div style={{ flex:1, overflowY:"auto", padding:"12px 16px", display:"flex", flexDirection:"column", gap:10 }}>
+                {chatMessages.map(m=>{
+                  const isUser=m.from==="user";
+                  const agent=Object.values(agents).flat().find(a=>a.id===m.agentId);
+                  const d=agent?DEPTS.find(x=>x.id===agent.dept)||DEPTS[0]:DEPTS[0];
+                  return (
+                    <div key={m.id} style={{ display:"flex", flexDirection:"column", alignItems:isUser?"flex-end":"flex-start" }}>
+                      {!isUser && <div style={{ fontFamily:SF, fontSize:10, fontWeight:600, color:d.color, marginBottom:3, marginLeft:32 }}>{m.agentName}</div>}
+                      <div style={{ display:"flex", alignItems:"flex-end", gap:7, maxWidth:"88%", flexDirection:isUser?"row-reverse":"row" }}>
+                        {!isUser && <div style={{ width:24, height:24, borderRadius:7, background:d.light, display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, flexShrink:0 }}>{agentEmoji(agent?.name||"")}</div>}
+                        {isUser && <div style={{ width:22, height:22, borderRadius:"50%", background:`linear-gradient(135deg,${ACCENT},#7C3AED)`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:SF, fontSize:8, fontWeight:700, color:"#fff", flexShrink:0 }}>RV</div>}
+                        <div style={{ background:isUser?ACCENT:"#F3F4F6", color:isUser?"#fff":"#111827", borderRadius:isUser?"12px 12px 3px 12px":"12px 12px 12px 3px", padding:"9px 12px", fontFamily:SF, fontSize:13, lineHeight:1.45 }}>{m.text}</div>
+                      </div>
+                      <span style={{ fontFamily:SF, fontSize:10, color:"#C7C7CC", marginTop:2, [isUser?"marginRight":"marginLeft"]:30 }}>{m.time}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              {/* Quick suggestions */}
+              <div style={{ padding:"0 12px 6px", display:"flex", gap:6, overflowX:"auto", flexShrink:0 }}>
+                {["État d'avancement ?","Blocages ?","Prépare un résumé"].map(s=>(
+                  <button key={s} onClick={()=>setChatInput(s)} style={{ fontFamily:SF, fontSize:11, color:ACCENT, background:`${ACCENT}10`, border:`1px solid ${ACCENT}25`, borderRadius:20, padding:"4px 10px", cursor:"pointer", whiteSpace:"nowrap", flexShrink:0 }}>{s}</button>
+                ))}
+              </div>
+              {/* Input */}
+              <div style={{ padding:"8px 12px 16px", borderTop:"0.5px solid #F3F4F6", display:"flex", alignItems:"center", gap:8, flexShrink:0 }}>
+                <input value={chatInput} onChange={e=>setChatInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&sendMsg(selProj)}
+                  placeholder="Message à l'équipe projet…"
+                  style={{ flex:1, background:"#F3F4F6", border:"none", outline:"none", borderRadius:20, padding:"8px 14px", fontFamily:SF, fontSize:13, color:"#111827" }}/>
+                <button onClick={()=>sendMsg(selProj)} disabled={!chatInput.trim()}
+                  style={{ width:34, height:34, borderRadius:"50%", background:chatInput.trim()?ACCENT:"#E5E7EB", border:"none", cursor:chatInput.trim()?"pointer":"default", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, transition:"background 0.2s" }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -2903,13 +3080,14 @@ function DesktopApp({ activeTab, setActiveTab, agents, setAgents, fil, setFil, f
   const all = Object.values(agents).flat();
 
   const NAV_ITEMS = [
-    { id:"accueil",  label:"Accueil",  icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-4h4v4h4a1 1 0 001-1v-9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg> },
-    { id:"projets",  label:"Projets",  icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="1.8"/><path d="M8 21h8M12 17v4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg> },
-    { id:"agents",   label:"Agents",   icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="1.8"/><path d="M2 21c0-3.314 3.134-6 7-6s7 2.686 7 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/><path d="M19 8v6M22 11h-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg> },
-    { id:"services", label:"Services", icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><rect x="2" y="7" width="9" height="14" rx="1.5" stroke="currentColor" strokeWidth="1.8"/><rect x="13" y="3" width="9" height="18" rx="1.5" stroke="currentColor" strokeWidth="1.8"/></svg> },
-    { id:"sources",  label:"Sources",  icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><ellipse cx="12" cy="5" rx="9" ry="3" stroke="currentColor" strokeWidth="1.8"/><path d="M21 12c0 1.657-4.03 3-9 3s-9-1.343-9-3M3 5v14c0 1.657 4.03 3 9 3s9-1.343 9-3V5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg> },
-    { id:"fil",      label:"Fil",      icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" strokeWidth="1.8"/><path d="M9 12h6M9 16h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>, badge: filPending },
-    { id:"admin",    label:"Admin",    icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" strokeWidth="1.8"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" strokeWidth="1.8"/></svg> },
+    { id:"accueil",  label:"Dashboard", icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-4h4v4h4a1 1 0 001-1v-9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg> },
+    { id:"chat",     label:"Chat",      icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg> },
+    { id:"projets",  label:"Projets",   icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="1.8"/><path d="M8 21h8M12 17v4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg> },
+    { id:"agents",   label:"Agents",    icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="1.8"/><path d="M2 21c0-3.314 3.134-6 7-6s7 2.686 7 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/><path d="M19 8v6M22 11h-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg> },
+    { id:"services", label:"Services",  icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><rect x="2" y="7" width="9" height="14" rx="1.5" stroke="currentColor" strokeWidth="1.8"/><rect x="13" y="3" width="9" height="18" rx="1.5" stroke="currentColor" strokeWidth="1.8"/></svg> },
+    { id:"sources",  label:"Sources",   icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><ellipse cx="12" cy="5" rx="9" ry="3" stroke="currentColor" strokeWidth="1.8"/><path d="M21 12c0 1.657-4.03 3-9 3s-9-1.343-9-3M3 5v14c0 1.657 4.03 3 9 3s9-1.343 9-3V5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg> },
+    { id:"fil",      label:"Fil",       icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" strokeWidth="1.8"/><path d="M9 12h6M9 16h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>, badge: filPending },
+    { id:"admin",    label:"Admin",     icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" strokeWidth="1.8"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" strokeWidth="1.8"/></svg> },
   ];
 
   const [selAgent, setSelAgent] = useState(null);
@@ -2980,12 +3158,13 @@ function DesktopApp({ activeTab, setActiveTab, agents, setAgents, fil, setFil, f
         {/* Content */}
         <div style={{ flex:1, display:"flex", overflow:"hidden" }}>
           {activeTab==="accueil"  && <DeskAccueil  agents={agents} fil={fil} setActiveTab={setActiveTab} onAgent={setSelAgent} onFil={setActionSheet}/>}
+          {activeTab==="chat"     && <ChatScreen   agents={agents}/>}
           {activeTab==="projets"  && <DeskProjets  agents={agents} onAgent={setSelAgent}/>}
           {activeTab==="agents"   && <DeskAgents   agents={agents} setAgents={setAgents} onAgent={setSelAgent}/>}
           {activeTab==="services" && <DeskServices agents={agents}/>}
           {activeTab==="sources"  && <DeskSources/>}
           {activeTab==="fil"      && <DeskFil fil={fil} setFil={setFil} onAction={setActionSheet}/>}
-          {activeTab==="admin"    && <DeskAdmin agents={agents} setAgents={setAgents} onToggleView={()=>setIsDesktop(false)}/>}
+          {activeTab==="admin"    && <DeskAdmin agents={agents} setAgents={setAgents} onToggleView={switchToMobile}/>}
         </div>
       </div>
 
@@ -3003,6 +3182,341 @@ function DesktopApp({ activeTab, setActiveTab, agents, setAgents, fil, setFil, f
   );
 }
 
+// ─── CHAT SCREEN ──────────────────────────────────────────────────────────────
+
+const MODELS = [
+  { id:"claude-sonnet", label:"Claude Sonnet 4", provider:"Anthropic", badge:"Recommandé", color:"#F97316" },
+  { id:"claude-opus",   label:"Claude Opus 4",   provider:"Anthropic", badge:"Puissant",   color:"#7C3AED" },
+  { id:"gpt4o",         label:"GPT-4o",          provider:"OpenAI",    badge:"",           color:"#10B981" },
+  { id:"dimple",        label:"Dimple",          provider:"iQo / Azure EU", badge:"Données sensibles", color:"#0EA5E9" },
+];
+
+const CHAT_HISTORY = {
+  "p1": [
+    { id:"h1", title:"Analyse architecture EDF", date:"Aujourd'hui", preview:"Quelles sont les principales contraintes de la revue d'archi ?", msgs:[
+      { role:"user",      text:"Quelles sont les principales contraintes de la revue d'architecture cible ?" },
+      { role:"assistant", text:"D'après les derniers éléments du projet EDF, trois contraintes majeures émergent : (1) la dépendance sur le fournisseur X pour la couche middleware, (2) les délais de validation sécurité (+2 semaines), (3) la disponibilité de l'architecte référent jusqu'au 15 juin." },
+      { role:"user",      text:"Comment débloquer la dépendance fournisseur X ?" },
+      { role:"assistant", text:"Deux leviers opérationnels : escalader auprès du CPMO pour accélérer la contractualisation, ou identifier un fournisseur alternatif déjà référencé dans le catalogue. Je peux préparer une note de synthèse comparative si vous le souhaitez." },
+    ]},
+    { id:"h2", title:"Préparation CODIR", date:"Hier", preview:"Synthèse des risques pour le comité de pilotage", msgs:[
+      { role:"user",      text:"Prépare une synthèse des risques pour le CODIR de vendredi." },
+      { role:"assistant", text:"Voici la synthèse des 4 risques majeurs à présenter au CODIR : ① Planning : 2 jalons décalés de 3 semaines ② Budget : dépassement prévisionnel de +4% ③ Ressources : sous-staffing sur le volet sécurité ④ Technique : dette applicative sur les APIs legacy. Je génère le slide ?" },
+    ]},
+  ],
+  "p2": [
+    { id:"h3", title:"Stratégie IA BPCE", date:"Il y a 2 jours", preview:"Use cases prioritaires pour la transformation", msgs:[
+      { role:"user",      text:"Quels use cases IA prioriser pour BPCE en phase 1 ?" },
+      { role:"assistant", text:"Sur la base du benchmark LLM et des ateliers métiers, je recommande de prioriser : (1) Détection de fraude augmentée — ROI immédiat et fort engagement DSI. (2) Assistant conseiller clientèle — différenciant commercial. (3) Automatisation conformité KYC — quick win réglementaire." },
+    ]},
+  ],
+  "all": [
+    { id:"h4", title:"Veille IA entreprise", date:"Aujourd'hui", preview:"Dernières avancées des LLM pour le conseil", msgs:[
+      { role:"user",      text:"Quelles sont les dernières avancées des LLM pour le conseil ?" },
+      { role:"assistant", text:"Trois tendances majeures en mai 2025 : (1) Les modèles de raisonnement (o3, Sonnet 4) atteignent maintenant la parité expert sur les analyses financières complexes. (2) L'intégration native aux outils métier (CRM, ERP) devient le standard. (3) Les modèles souverains EU progressent (Mistral Large 2)." },
+    ]},
+  ],
+};
+
+function ChatScreen({ agents }) {
+  const [selProject,   setSelProject]   = useState("all");
+  const [selConv,      setSelConv]      = useState(null);
+  const [messages,     setMessages]     = useState([]);
+  const [input,        setInput]        = useState("");
+  const [selModel,     setSelModel]     = useState("claude-sonnet");
+  const [webAccess,    setWebAccess]    = useState(true);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showHistory,  setShowHistory]  = useState(true);
+  const [attachments,  setAttachments]  = useState([]);
+  const [selSources,   setSelSources]   = useState(["f1","f2","f3"]);
+  const [isTyping,     setIsTyping]     = useState(false);
+  const messagesEndRef = useRef(null);
+
+  const model = MODELS.find(m=>m.id===selModel)||MODELS[0];
+  const projectHistory = CHAT_HISTORY[selProject]||CHAT_HISTORY["all"];
+  const currentProj = INIT_PROJETS.find(p=>p.id===selProject);
+
+  const loadConv = (conv) => { setSelConv(conv); setMessages(conv.msgs); setShowHistory(false); };
+  const newConv  = () => { setSelConv(null); setMessages([]); setShowHistory(false); };
+
+  const send = () => {
+    if(!input.trim()&&attachments.length===0) return;
+    const userMsg = { role:"user", text:input.trim(), attachments:[...attachments] };
+    setMessages(prev=>[...prev, userMsg]);
+    setInput(""); setAttachments([]); setIsTyping(true);
+    setTimeout(()=>{
+      setIsTyping(false);
+      setMessages(prev=>[...prev, { role:"assistant", text:`Je traite votre demande${currentProj?` dans le contexte du projet **${currentProj.name}**`:""}.${webAccess?" J'ai également accès au web pour enrichir ma réponse.":""} Voici mon analyse…` }]);
+    }, 1400);
+  };
+
+  const toggleSource = (id) => setSelSources(prev=>prev.includes(id)?prev.filter(x=>x!==id):[...prev,id]);
+
+  const isDesktopLayout = typeof window !== "undefined" && window.innerWidth >= 768;
+
+  return (
+    <div style={{ flex:1, display:"flex", overflow:"hidden", background:"#F9FAFB", fontFamily:SF }}>
+
+      {/* ── LEFT PANEL — History + Settings ── */}
+      <div style={{ width:260, borderRight:"0.5px solid #E5E7EB", background:"#fff", display:"flex", flexDirection:"column", flexShrink:0, overflow:"hidden" }}>
+
+        {/* Project selector */}
+        <div style={{ padding:"16px 14px 12px", borderBottom:"0.5px solid #F3F4F6" }}>
+          <div style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em", marginBottom:8 }}>Contexte projet</div>
+          <select value={selProject} onChange={e=>{ setSelProject(e.target.value); setSelConv(null); setMessages([]); setShowHistory(true); }}
+            style={{ width:"100%", background:"#F3F4F6", border:"none", borderRadius:9, padding:"8px 10px", fontFamily:SF, fontSize:13, color:"#111827", cursor:"pointer", outline:"none" }}>
+            <option value="all">Tous les projets</option>
+            {INIT_PROJETS.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}
+          </select>
+        </div>
+
+        {/* New conversation button */}
+        <div style={{ padding:"10px 14px", borderBottom:"0.5px solid #F3F4F6" }}>
+          <button onClick={newConv} style={{ width:"100%", background:ACCENT, color:"#fff", border:"none", borderRadius:9, padding:"9px", fontFamily:SF, fontSize:13, fontWeight:600, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:6 }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#fff" strokeWidth="2.2" strokeLinecap="round"/></svg>
+            Nouvelle conversation
+          </button>
+        </div>
+
+        {/* Conversation history */}
+        <div style={{ flex:1, overflowY:"auto" }}>
+          <div style={{ padding:"10px 14px 6px" }}>
+            <div style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em" }}>
+              Historique {currentProj?`— ${currentProj.name}`:"— Tous les projets"}
+            </div>
+          </div>
+          {projectHistory.length===0 && (
+            <div style={{ padding:"20px 14px", fontFamily:SF, fontSize:13, color:"#9CA3AF", textAlign:"center" }}>Aucune conversation</div>
+          )}
+          {projectHistory.map(conv=>(
+            <div key={conv.id} onClick={()=>loadConv(conv)}
+              style={{ padding:"10px 14px", cursor:"pointer", background:selConv?.id===conv.id?`${ACCENT}08`:"transparent", borderLeft:selConv?.id===conv.id?`3px solid ${ACCENT}`:"3px solid transparent", transition:"all 0.15s" }}>
+              <div style={{ fontFamily:SF, fontSize:13, fontWeight:500, color:"#111827", marginBottom:2, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{conv.title}</div>
+              <div style={{ fontFamily:SF, fontSize:11, color:"#9CA3AF", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{conv.preview}</div>
+              <div style={{ fontFamily:SF, fontSize:10, color:"#C7C7CC", marginTop:3 }}>{conv.date}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Settings panel (collapsible) */}
+        <div style={{ borderTop:"0.5px solid #F3F4F6" }}>
+          <button onClick={()=>setShowSettings(p=>!p)} style={{ width:"100%", padding:"11px 14px", display:"flex", alignItems:"center", justifyContent:"space-between", background:"none", border:"none", cursor:"pointer", fontFamily:SF, fontSize:12, fontWeight:600, color:"#374151" }}>
+            <span>⚙ Paramètres</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style={{ transform:showSettings?"rotate(180deg)":"none", transition:"transform 0.2s" }}><path d="M6 9l6 6 6-6" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round"/></svg>
+          </button>
+          {showSettings && (
+            <div style={{ padding:"0 14px 14px" }}>
+              {/* Model */}
+              <div style={{ marginBottom:12 }}>
+                <div style={{ fontFamily:SF, fontSize:11, fontWeight:600, color:"#9CA3AF", textTransform:"uppercase", marginBottom:6 }}>Modèle</div>
+                {MODELS.map(m=>(
+                  <div key={m.id} onClick={()=>setSelModel(m.id)}
+                    style={{ display:"flex", alignItems:"center", gap:8, padding:"7px 9px", borderRadius:8, cursor:"pointer", background:selModel===m.id?`${ACCENT}10`:"transparent", marginBottom:2, border:selModel===m.id?`1px solid ${ACCENT}25`:"1px solid transparent" }}>
+                    <div style={{ width:8, height:8, borderRadius:"50%", background:m.color, flexShrink:0 }}/>
+                    <div style={{ flex:1, minWidth:0 }}>
+                      <div style={{ fontFamily:SF, fontSize:12, fontWeight:selModel===m.id?600:400, color:selModel===m.id?ACCENT:"#374151" }}>{m.label}</div>
+                      <div style={{ fontFamily:SF, fontSize:10, color:"#9CA3AF" }}>{m.provider}</div>
+                    </div>
+                    {m.badge && <span style={{ fontFamily:SF, fontSize:9, fontWeight:700, color:m.color, background:m.color+"14", borderRadius:5, padding:"1px 5px", flexShrink:0 }}>{m.badge}</span>}
+                  </div>
+                ))}
+              </div>
+              {/* Web access */}
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
+                <span style={{ fontFamily:SF, fontSize:12, color:"#374151" }}>🌐 Accès web</span>
+                <IOSToggle on={webAccess} onToggle={()=>setWebAccess(p=>!p)} scale={0.7} />
+              </div>
+              {/* Sources */}
+              <div>
+                <div style={{ fontFamily:SF, fontSize:11, fontWeight:600, color:"#9CA3AF", textTransform:"uppercase", marginBottom:6 }}>Connecteurs actifs</div>
+                {ALL_SOURCES.map(s=>(
+                  <div key={s.id} onClick={()=>toggleSource(s.id)}
+                    style={{ display:"flex", alignItems:"center", gap:7, padding:"5px 0", cursor:"pointer" }}>
+                    <div style={{ width:16, height:16, borderRadius:4, border:`1.5px solid ${selSources.includes(s.id)?ACCENT:"#D1D5DB"}`, background:selSources.includes(s.id)?ACCENT:"transparent", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, transition:"all 0.15s" }}>
+                      {selSources.includes(s.id)&&<svg width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                    </div>
+                    <span style={{ fontSize:14 }}>{s.icon}</span>
+                    <span style={{ fontFamily:SF, fontSize:12, color:"#374151" }}>{s.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── MAIN CHAT AREA ── */}
+      <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden" }}>
+
+        {/* Chat top bar */}
+        <div style={{ height:52, background:"#fff", borderBottom:"0.5px solid #E5E7EB", display:"flex", alignItems:"center", padding:"0 20px", gap:12, flexShrink:0 }}>
+          <div style={{ flex:1 }}>
+            <div style={{ fontFamily:SF, fontSize:14, fontWeight:600, color:"#111827" }}>
+              {selConv ? selConv.title : "Nouvelle conversation"}
+            </div>
+            <div style={{ fontFamily:SF, fontSize:11, color:"#9CA3AF", display:"flex", alignItems:"center", gap:6 }}>
+              <div style={{ width:7, height:7, borderRadius:"50%", background:model.color }}/>
+              {model.label} · {model.provider}
+              {webAccess&&<>· <span style={{ color:"#10B981" }}>Web ✓</span></>}
+              {selSources.length>0&&<>· {selSources.length} connecteur{selSources.length>1?"s":""}</>}
+              {currentProj&&<>· <span style={{ color:currentProj.color }}>📁 {currentProj.name}</span></>}
+            </div>
+          </div>
+          <button onClick={newConv} style={{ background:"#F3F4F6", border:"none", borderRadius:8, padding:"6px 12px", fontFamily:SF, fontSize:12, fontWeight:600, color:"#374151", cursor:"pointer" }}>
+            + Nouveau
+          </button>
+        </div>
+
+        {/* Messages */}
+        <div style={{ flex:1, overflowY:"auto", padding:"24px 32px" }}>
+          {messages.length===0 && (
+            <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", height:"100%", gap:20 }}>
+              <div style={{ width:56, height:56, borderRadius:16, background:`${ACCENT}14`, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke={ACCENT} strokeWidth="1.8" strokeLinecap="round"/></svg>
+              </div>
+              <div style={{ textAlign:"center" }}>
+                <div style={{ fontFamily:SF, fontSize:18, fontWeight:700, color:"#111827", marginBottom:6 }}>Comment puis-je vous aider ?</div>
+                <div style={{ fontFamily:SF, fontSize:14, color:"#9CA3AF" }}>
+                  {currentProj?`Contexte : ${currentProj.name}`:"Sélectionnez un projet ou posez une question générale"}
+                </div>
+              </div>
+              {/* Quick suggestions */}
+              <div style={{ display:"flex", flexWrap:"wrap", gap:8, justifyContent:"center", maxWidth:560 }}>
+                {(currentProj?[
+                  `État d'avancement de ${currentProj.name}`,
+                  `Risques identifiés sur ${currentProj.name}`,
+                  `Prépare un point de situation`,
+                  `Prochaines actions prioritaires`,
+                ]:[
+                  "Synthèse de la semaine sur tous les projets",
+                  "Quels agents sont en attente de validation ?",
+                  "Dernières tendances IA pour le conseil",
+                  "Prépare un rapport d'activité",
+                ]).map(s=>(
+                  <button key={s} onClick={()=>{ setInput(s); }}
+                    style={{ fontFamily:SF, fontSize:13, color:ACCENT, background:`${ACCENT}10`, border:`1px solid ${ACCENT}25`, borderRadius:20, padding:"7px 14px", cursor:"pointer", textAlign:"left" }}>
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {messages.map((m,i)=>{
+            const isUser = m.role==="user";
+            return (
+              <div key={i} style={{ display:"flex", gap:14, marginBottom:24, flexDirection:isUser?"row-reverse":"row", alignItems:"flex-start" }}>
+                {/* Avatar */}
+                <div style={{ width:34, height:34, borderRadius:isUser?"50%":10, background:isUser?`linear-gradient(135deg,${ACCENT},#7C3AED)`:`${ACCENT}14`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                  {isUser
+                    ? <span style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#fff" }}>RV</span>
+                    : <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke={ACCENT} strokeWidth="1.8" strokeLinecap="round"/></svg>
+                  }
+                </div>
+                <div style={{ flex:1, maxWidth:680 }}>
+                  {/* Attachments */}
+                  {m.attachments&&m.attachments.length>0&&(
+                    <div style={{ display:"flex", gap:6, marginBottom:8, flexDirection:isUser?"row-reverse":"row" }}>
+                      {m.attachments.map((a,ai)=>(
+                        <div key={ai} style={{ background:"#F3F4F6", borderRadius:8, padding:"5px 10px", fontFamily:SF, fontSize:12, color:"#374151", display:"flex", alignItems:"center", gap:5 }}>
+                          📎 {a}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <div style={{ background:isUser?ACCENT:"#fff", color:isUser?"#fff":"#111827", borderRadius:isUser?"16px 16px 4px 16px":"16px 16px 16px 4px", padding:"12px 16px", fontFamily:SF, fontSize:14, lineHeight:1.65, boxShadow:isUser?"none":"0 1px 3px rgba(0,0,0,0.06)", border:isUser?"none":"0.5px solid #E5E7EB", whiteSpace:"pre-wrap" }}>
+                    {m.text}
+                  </div>
+                  {!isUser&&(
+                    <div style={{ display:"flex", gap:8, marginTop:6 }}>
+                      {["📋 Copier","👍","👎","↺ Régénérer"].map(a=>(
+                        <button key={a} style={{ background:"none", border:"none", cursor:"pointer", fontFamily:SF, fontSize:11, color:"#9CA3AF", padding:"2px 4px", borderRadius:5 }}>{a}</button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Typing indicator */}
+          {isTyping&&(
+            <div style={{ display:"flex", gap:14, marginBottom:24 }}>
+              <div style={{ width:34, height:34, borderRadius:10, background:`${ACCENT}14`, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke={ACCENT} strokeWidth="1.8" strokeLinecap="round"/></svg>
+              </div>
+              <div style={{ background:"#fff", borderRadius:"16px 16px 16px 4px", padding:"14px 18px", boxShadow:"0 1px 3px rgba(0,0,0,0.06)", border:"0.5px solid #E5E7EB", display:"flex", gap:5, alignItems:"center" }}>
+                {[0,1,2].map(i=>(
+                  <div key={i} style={{ width:7, height:7, borderRadius:"50%", background:ACCENT, opacity:0.7, animation:`ping 1.2s ease-in-out ${i*0.2}s infinite` }}/>
+                ))}
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef}/>
+        </div>
+
+        {/* Input area */}
+        <div style={{ borderTop:"0.5px solid #E5E7EB", background:"#fff", padding:"14px 20px 18px", flexShrink:0 }}>
+          {/* Attachments preview */}
+          {attachments.length>0&&(
+            <div style={{ display:"flex", gap:6, marginBottom:10, flexWrap:"wrap" }}>
+              {attachments.map((a,i)=>(
+                <div key={i} style={{ background:`${ACCENT}10`, border:`1px solid ${ACCENT}25`, borderRadius:8, padding:"4px 10px", fontFamily:SF, fontSize:12, color:ACCENT, display:"flex", alignItems:"center", gap:6 }}>
+                  📎 {a}
+                  <button onClick={()=>setAttachments(prev=>prev.filter((_,j)=>j!==i))} style={{ background:"none", border:"none", cursor:"pointer", color:ACCENT, fontSize:14, lineHeight:1, padding:0 }}>×</button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div style={{ background:"#F3F4F6", borderRadius:14, overflow:"hidden" }}>
+            {/* Toolbar */}
+            <div style={{ display:"flex", alignItems:"center", gap:4, padding:"8px 12px 0" }}>
+              {/* Attach */}
+              <button onClick={()=>setAttachments(prev=>[...prev,`Document_${prev.length+1}.pdf`])}
+                style={{ width:30, height:30, borderRadius:8, background:"transparent", border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", color:"#6B7280" }} title="Joindre un fichier">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>
+              </button>
+              {/* Web toggle inline */}
+              <button onClick={()=>setWebAccess(p=>!p)}
+                style={{ padding:"4px 8px", borderRadius:8, background:webAccess?`${ACCENT}14`:"transparent", border:`1px solid ${webAccess?ACCENT+"30":"transparent"}`, cursor:"pointer", fontFamily:SF, fontSize:11, fontWeight:600, color:webAccess?ACCENT:"#9CA3AF", display:"flex", alignItems:"center", gap:4 }}>
+                🌐 Web {webAccess?"✓":""}
+              </button>
+              {/* Source count */}
+              <button onClick={()=>setShowSettings(p=>!p)}
+                style={{ padding:"4px 8px", borderRadius:8, background:`${ACCENT}14`, border:`1px solid ${ACCENT}30`, cursor:"pointer", fontFamily:SF, fontSize:11, fontWeight:600, color:ACCENT }}>
+                🔗 {selSources.length} connecteur{selSources.length>1?"s":""}
+              </button>
+              {/* Model badge */}
+              <button onClick={()=>setShowSettings(p=>!p)}
+                style={{ padding:"4px 8px", borderRadius:8, background:model.color+"14", border:`1px solid ${model.color}30`, cursor:"pointer", fontFamily:SF, fontSize:11, fontWeight:600, color:model.color, marginLeft:"auto" }}>
+                {model.label}
+              </button>
+            </div>
+            {/* Text input */}
+            <textarea value={input} onChange={e=>setInput(e.target.value)}
+              onKeyDown={e=>{ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); send(); } }}
+              placeholder={currentProj?`Posez une question sur ${currentProj.name}…`:"Posez une question ou donnez une instruction…"}
+              rows={3}
+              style={{ width:"100%", background:"transparent", border:"none", outline:"none", padding:"8px 14px 6px", fontFamily:SF, fontSize:14, color:"#111827", resize:"none", lineHeight:1.55 }}/>
+            {/* Send bar */}
+            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"6px 12px 10px" }}>
+              <span style={{ fontFamily:SF, fontSize:11, color:"#C7C7CC" }}>↵ Entrée pour envoyer · ⇧↵ nouvelle ligne</span>
+              <button onClick={send} disabled={!input.trim()&&attachments.length===0}
+                style={{ width:36, height:36, borderRadius:"50%", background:(input.trim()||attachments.length>0)?ACCENT:"#E5E7EB", border:"none", cursor:(input.trim()||attachments.length>0)?"pointer":"default", display:"flex", alignItems:"center", justifyContent:"center", transition:"background 0.2s" }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+          <div style={{ fontFamily:SF, fontSize:11, color:"#C7C7CC", textAlign:"center", marginTop:8 }}>
+            iQo Agentic AI peut faire des erreurs. Vérifiez les informations importantes.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── ROOT ─────────────────────────────────────────────────────────────────────
 
 export default function App() {
@@ -3012,18 +3526,29 @@ export default function App() {
   const [selAgent,    setSelAgent]    = useState(null);
   const [selDept,     setSelDept]     = useState(null);
   const [actionSheet, setActionSheet] = useState(null);
-  const [isDesktop,   setIsDesktop]   = useState(typeof window !== "undefined" ? window.innerWidth >= 768 : false);
+
+  // Default: desktop. Switch to mobile only if screen < 768px.
+  // manualOverride: when user clicks the toggle in Admin, freeze the mode.
+  const [isDesktop,     setIsDesktop]     = useState(true);
+  const [manualOverride, setManualOverride] = useState(false);
 
   const filPending = fil.filter(f=>!f.resolved).length;
   const filUrgent  = fil.filter(f=>!f.resolved&&f.type==="urgent").length;
 
-  // Responsive detection
-  useState(()=>{
-    if(typeof window==="undefined") return;
-    const handler = ()=>setIsDesktop(window.innerWidth>=768);
-    window.addEventListener("resize", handler);
-    return ()=>window.removeEventListener("resize", handler);
-  });
+  // On mount: switch to mobile if on a small screen (real mobile device).
+  useEffect(()=>{
+    const check = () => {
+      if (!manualOverride) {
+        setIsDesktop(window.innerWidth >= 768);
+      }
+    };
+    check(); // run on mount
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, [manualOverride]);
+
+  const switchToMobile  = () => { setManualOverride(true);  setIsDesktop(false); };
+  const switchToDesktop = () => { setManualOverride(true);  setIsDesktop(true);  };
 
   const resolve = (item, action, comment) => {
     setFil(prev=>prev.map(f=>f.id===item.id?{...f,resolved:true,action,comment}:f));
@@ -3060,11 +3585,11 @@ export default function App() {
 
   // Mobile — iPhone 15 Pro shell
   const NAV = [
-    { id:"accueil",  label:"Accueil",  svg:<svg viewBox="0 0 24 24" fill="none" width="22" height="22"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-4h4v4h4a1 1 0 001-1v-9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg> },
-    { id:"fil",      label:"Fil",      svg:<svg viewBox="0 0 24 24" fill="none" width="22" height="22"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" strokeWidth="1.8"/><path d="M9 12h6M9 16h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg> },
-    { id:"projets",  label:"Projets",  svg:<svg viewBox="0 0 24 24" fill="none" width="22" height="22"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="1.8"/><path d="M8 21h8M12 17v4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg> },
-    { id:"agents",   label:"Agents",   svg:<svg viewBox="0 0 24 24" fill="none" width="22" height="22"><circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="1.8"/><path d="M2 21c0-3.314 3.134-6 7-6s7 2.686 7 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/><path d="M19 8v6M22 11h-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg> },
-    { id:"admin",    label:"Admin",    svg:<svg viewBox="0 0 24 24" fill="none" width="22" height="22"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" strokeWidth="1.8"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" strokeWidth="1.8"/></svg> },
+    { id:"accueil",  label:"Dashboard", svg:<svg viewBox="0 0 24 24" fill="none" width="22" height="22"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-4h4v4h4a1 1 0 001-1v-9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg> },
+    { id:"chat",     label:"Chat",      svg:<svg viewBox="0 0 24 24" fill="none" width="22" height="22"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg> },
+    { id:"fil",      label:"Fil",       svg:<svg viewBox="0 0 24 24" fill="none" width="22" height="22"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" strokeWidth="1.8"/><path d="M9 12h6M9 16h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg> },
+    { id:"projets",  label:"Projets",   svg:<svg viewBox="0 0 24 24" fill="none" width="22" height="22"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="1.8"/><path d="M8 21h8M12 17v4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg> },
+    { id:"admin",    label:"Admin",     svg:<svg viewBox="0 0 24 24" fill="none" width="22" height="22"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" strokeWidth="1.8"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" strokeWidth="1.8"/></svg> },
   ];
 
   const W=393, H=852;
@@ -3098,10 +3623,11 @@ export default function App() {
             <div style={{ height:"0.5px", background:"#E5E7EB", flexShrink:0 }}/>
             <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden" }}>
               {activeTab==="accueil" && <AccueilScreen agents={agents} fil={fil} onAgent={setSelAgent} onFil={setActionSheet} setActiveTab={setActiveTab}/>}
+              {activeTab==="chat"    && <ChatScreen    agents={agents}/>}
               {activeTab==="fil"     && <FilScreen fil={fil} setFil={setFil} onAction={setActionSheet}/>}
               {activeTab==="projets" && <ProjetsScreen agents={agents} onAgent={setSelAgent}/>}
               {activeTab==="agents"  && <AgentsScreen agents={agents} setAgents={setAgents} onAgent={setSelAgent}/>}
-              {activeTab==="admin"   && <AdminScreen agents={agents} setAgents={setAgents} onToggleView={()=>setIsDesktop(true)}/>}
+              {activeTab==="admin"   && <AdminScreen agents={agents} setAgents={setAgents} onToggleView={switchToDesktop}/>}
             </div>
             <div style={{ background:"rgba(255,255,255,0.97)", backdropFilter:"blur(20px) saturate(180%)", borderTop:"0.5px solid #E5E7EB", padding:"8px 0", display:"flex", justifyContent:"space-around", flexShrink:0 }}>
               {NAV.map(nav=>(
@@ -3124,4 +3650,3 @@ export default function App() {
     </div>
   );
 }
-
