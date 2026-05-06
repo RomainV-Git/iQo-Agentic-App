@@ -1421,6 +1421,10 @@ const INIT_PROJETS = [
     nextStep:"Revue d'architecture cible", period:"Janv. 2025 – Juin 2025",
     desc:"Accompagnement sur la définition de la cible d'architecture SI et la rationalisation du portefeuille applicatif.",
     sources:["f1","f2","f3","f6"],
+    sharepoint_folders:[
+      { id:"sp1", name:"EDF / Architecture SI / Livrables", url:"https://iqo.sharepoint.com/sites/edf/archi" },
+      { id:"sp2", name:"EDF / Architecture SI / Réunions",  url:"https://iqo.sharepoint.com/sites/edf/meetings" },
+    ],
     rapports:[
       { name:"Rapport d'avancement - Mai 2025", date:"15 mai 2025", type:"PDF" },
       { name:"Synthèse des risques",            date:"12 mai 2025", type:"PDF" },
@@ -1452,7 +1456,7 @@ const INIT_PROJETS = [
     agents:["mk-1","co-1","fi-1","rh-2"], deadline:"15 sept. 2025",
     nextStep:"Atelier gouvernance IA", period:"Mars 2025 – Sept. 2025",
     desc:"Définition de la stratégie IA et accompagnement à la transformation des métiers banque-assurance.",
-    sources:["f1","f5","f6"],
+    sources:["f1","f5","f6"], sharepoint_folders:[],
     rapports:[
       { name:"Cadrage stratégique IA",   date:"10 mai 2025", type:"PDF" },
       { name:"Benchmark LLM entreprise", date:"5 mai 2025",  type:"PDF" },
@@ -2643,6 +2647,28 @@ function DeskProjets({ agents, onAgent }) {
                   })}
                 </div>
               )}
+              {/* SharePoint folders */}
+              <div style={{ marginTop:16 }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
+                  <div style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em" }}>Dossiers SharePoint</div>
+                  <button onClick={()=>{ const name = window.prompt("Nom ou URL du dossier SharePoint :"); if(name){ setSelProj(p=>({...p, sharepoint_folders:[...(p.sharepoint_folders||[]), { id:"sp"+Date.now(), name, url:name.startsWith("http")?name:"https://iqo.sharepoint.com/sites/"+name }]})); } }}
+                    style={{ background:`${ACCENT}14`, color:ACCENT, border:"none", borderRadius:7, padding:"4px 10px", fontFamily:SF, fontSize:11, fontWeight:600, cursor:"pointer" }}>+ Ajouter</button>
+                </div>
+                {(selProj.sharepoint_folders||[]).length===0 && (
+                  <div style={{ fontFamily:SF, fontSize:12, color:"#9CA3AF", padding:"12px 0", textAlign:"center", background:"#F9FAFB", borderRadius:8 }}>Aucun dossier SharePoint associé</div>
+                )}
+                {(selProj.sharepoint_folders||[]).map(f=>(
+                  <div key={f.id} style={{ display:"flex", alignItems:"center", gap:8, padding:"8px 10px", background:"#F3F4F6", borderRadius:8, marginBottom:6 }}>
+                    <span style={{ fontSize:16 }}>📁</span>
+                    <div style={{ flex:1, minWidth:0 }}>
+                      <div style={{ fontFamily:SF, fontSize:12, fontWeight:500, color:"#111827", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{f.name}</div>
+                      <div style={{ fontFamily:SF, fontSize:10, color:"#9CA3AF", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{f.url}</div>
+                    </div>
+                    <button onClick={()=>setSelProj(p=>({...p, sharepoint_folders:p.sharepoint_folders.filter(x=>x.id!==f.id)}))}
+                      style={{ background:"none", border:"none", cursor:"pointer", color:"#9CA3AF", fontSize:18, lineHeight:1, padding:0, flexShrink:0 }}>×</button>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
@@ -3073,7 +3099,7 @@ function DeskAdmin({ agents, setAgents, onToggleView }) {
 
 // ─── DESKTOP LAYOUT ───────────────────────────────────────────────────────────
 
-function DesktopApp({ activeTab, setActiveTab, agents, setAgents, fil, setFil, filPending, filUrgent, actionSheet, setActionSheet, resolve }) {
+function DesktopApp({ activeTab, setActiveTab, agents, setAgents, fil, setFil, filPending, filUrgent, actionSheet, setActionSheet, resolve, switchToMobile }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [globalSearch, setGlobalSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
@@ -3225,7 +3251,7 @@ function ChatScreen({ agents }) {
   const [input,        setInput]        = useState("");
   const [selModel,     setSelModel]     = useState("claude-sonnet");
   const [webAccess,    setWebAccess]    = useState(true);
-  const [showSettings, setShowSettings] = useState(false);
+  const [showSettings, setShowSettings] = useState(false); // false | "connectors" | "model"
   const [showHistory,  setShowHistory]  = useState(true);
   const [attachments,  setAttachments]  = useState([]);
   const [selSources,   setSelSources]   = useState(["f1","f2","f3"]);
@@ -3252,7 +3278,6 @@ function ChatScreen({ agents }) {
 
   const toggleSource = (id) => setSelSources(prev=>prev.includes(id)?prev.filter(x=>x!==id):[...prev,id]);
 
-  const isDesktopLayout = typeof window !== "undefined" && window.innerWidth >= 768;
 
   return (
     <div style={{ flex:1, display:"flex", overflow:"hidden", background:"#F9FAFB", fontFamily:SF }}>
@@ -3300,11 +3325,11 @@ function ChatScreen({ agents }) {
 
         {/* Settings panel (collapsible) */}
         <div style={{ borderTop:"0.5px solid #F3F4F6" }}>
-          <button onClick={()=>setShowSettings(p=>!p)} style={{ width:"100%", padding:"11px 14px", display:"flex", alignItems:"center", justifyContent:"space-between", background:"none", border:"none", cursor:"pointer", fontFamily:SF, fontSize:12, fontWeight:600, color:"#374151" }}>
+          <button onClick={()=>setShowSettings(p=>p==="panel"?false:"panel")} style={{ width:"100%", padding:"11px 14px", display:"flex", alignItems:"center", justifyContent:"space-between", background:"none", border:"none", cursor:"pointer", fontFamily:SF, fontSize:12, fontWeight:600, color:"#374151" }}>
             <span>⚙ Paramètres</span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style={{ transform:showSettings?"rotate(180deg)":"none", transition:"transform 0.2s" }}><path d="M6 9l6 6 6-6" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round"/></svg>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style={{ transform:showSettings==="panel"?"rotate(180deg)":"none", transition:"transform 0.2s" }}><path d="M6 9l6 6 6-6" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round"/></svg>
           </button>
-          {showSettings && (
+          {showSettings==="panel" && (
             <div style={{ padding:"0 14px 14px" }}>
               {/* Model */}
               <div style={{ marginBottom:12 }}>
@@ -3471,27 +3496,68 @@ function ChatScreen({ agents }) {
 
           <div style={{ background:"#F3F4F6", borderRadius:14, overflow:"hidden" }}>
             {/* Toolbar */}
-            <div style={{ display:"flex", alignItems:"center", gap:4, padding:"8px 12px 0" }}>
+            <div style={{ display:"flex", alignItems:"center", gap:4, padding:"8px 12px 0", position:"relative" }}>
               {/* Attach */}
               <button onClick={()=>setAttachments(prev=>[...prev,`Document_${prev.length+1}.pdf`])}
                 style={{ width:30, height:30, borderRadius:8, background:"transparent", border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", color:"#6B7280" }} title="Joindre un fichier">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>
               </button>
-              {/* Web toggle inline */}
+              {/* Web toggle */}
               <button onClick={()=>setWebAccess(p=>!p)}
                 style={{ padding:"4px 8px", borderRadius:8, background:webAccess?`${ACCENT}14`:"transparent", border:`1px solid ${webAccess?ACCENT+"30":"transparent"}`, cursor:"pointer", fontFamily:SF, fontSize:11, fontWeight:600, color:webAccess?ACCENT:"#9CA3AF", display:"flex", alignItems:"center", gap:4 }}>
                 🌐 Web {webAccess?"✓":""}
               </button>
-              {/* Source count */}
-              <button onClick={()=>setShowSettings(p=>!p)}
-                style={{ padding:"4px 8px", borderRadius:8, background:`${ACCENT}14`, border:`1px solid ${ACCENT}30`, cursor:"pointer", fontFamily:SF, fontSize:11, fontWeight:600, color:ACCENT }}>
-                🔗 {selSources.length} connecteur{selSources.length>1?"s":""}
-              </button>
-              {/* Model badge */}
-              <button onClick={()=>setShowSettings(p=>!p)}
-                style={{ padding:"4px 8px", borderRadius:8, background:model.color+"14", border:`1px solid ${model.color}30`, cursor:"pointer", fontFamily:SF, fontSize:11, fontWeight:600, color:model.color, marginLeft:"auto" }}>
-                {model.label}
-              </button>
+              {/* Connectors dropdown */}
+              <div style={{ position:"relative" }}>
+                <button onClick={()=>setShowSettings(p=>p==="connectors"?false:"connectors")}
+                  style={{ padding:"4px 8px", borderRadius:8, background:`${ACCENT}14`, border:`1px solid ${ACCENT}30`, cursor:"pointer", fontFamily:SF, fontSize:11, fontWeight:600, color:ACCENT }}>
+                  🔗 {selSources.length} connecteur{selSources.length>1?"s":""}
+                </button>
+                {showSettings==="connectors" && (
+                  <div style={{ position:"absolute", bottom:"calc(100% + 8px)", left:0, background:"#fff", borderRadius:12, boxShadow:"0 8px 30px rgba(0,0,0,0.12)", border:"0.5px solid #E5E7EB", padding:"8px", minWidth:220, zIndex:100 }}>
+                    <div style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em", padding:"4px 8px 8px" }}>Connecteurs actifs</div>
+                    {ALL_SOURCES.map(s=>(
+                      <div key={s.id} onClick={()=>toggleSource(s.id)}
+                        style={{ display:"flex", alignItems:"center", gap:9, padding:"8px 8px", borderRadius:8, cursor:"pointer", background:selSources.includes(s.id)?`${ACCENT}08`:"transparent" }}>
+                        <div style={{ width:18, height:18, borderRadius:4, border:`1.5px solid ${selSources.includes(s.id)?ACCENT:"#D1D5DB"}`, background:selSources.includes(s.id)?ACCENT:"transparent", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, transition:"all 0.15s" }}>
+                          {selSources.includes(s.id)&&<svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                        </div>
+                        <span style={{ fontSize:16 }}>{s.icon}</span>
+                        <div style={{ flex:1 }}>
+                          <div style={{ fontFamily:SF, fontSize:13, color:"#111827" }}>{s.name}</div>
+                          <div style={{ fontFamily:SF, fontSize:10, color:"#9CA3AF" }}>{s.type}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {/* Model dropdown */}
+              <div style={{ position:"relative", marginLeft:"auto" }}>
+                <button onClick={()=>setShowSettings(p=>p==="model"?false:"model")}
+                  style={{ padding:"4px 10px", borderRadius:8, background:model.color+"14", border:`1px solid ${model.color}30`, cursor:"pointer", fontFamily:SF, fontSize:11, fontWeight:600, color:model.color, display:"flex", alignItems:"center", gap:5 }}>
+                  <div style={{ width:7, height:7, borderRadius:"50%", background:model.color }}/>
+                  {model.label}
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke={model.color} strokeWidth="2" strokeLinecap="round"/></svg>
+                </button>
+                {showSettings==="model" && (
+                  <div style={{ position:"absolute", bottom:"calc(100% + 8px)", right:0, background:"#fff", borderRadius:12, boxShadow:"0 8px 30px rgba(0,0,0,0.12)", border:"0.5px solid #E5E7EB", padding:"8px", minWidth:240, zIndex:100 }}>
+                    <div style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em", padding:"4px 8px 8px" }}>Modèle</div>
+                    {MODELS.map(m=>(
+                      <div key={m.id} onClick={()=>{ setSelModel(m.id); setShowSettings(false); }}
+                        style={{ display:"flex", alignItems:"center", gap:10, padding:"9px 8px", borderRadius:8, cursor:"pointer", background:selModel===m.id?`${ACCENT}08`:"transparent", border:selModel===m.id?`1px solid ${ACCENT}20`:"1px solid transparent", marginBottom:2 }}>
+                        <div style={{ width:10, height:10, borderRadius:"50%", background:m.color, flexShrink:0 }}/>
+                        <div style={{ flex:1 }}>
+                          <div style={{ fontFamily:SF, fontSize:13, fontWeight:selModel===m.id?600:400, color:selModel===m.id?ACCENT:"#111827" }}>{m.label}</div>
+                          <div style={{ fontFamily:SF, fontSize:11, color:"#9CA3AF" }}>{m.provider}</div>
+                        </div>
+                        {m.badge && <span style={{ fontFamily:SF, fontSize:9, fontWeight:700, color:m.color, background:m.color+"14", borderRadius:5, padding:"2px 6px" }}>{m.badge}</span>}
+                        {selModel===m.id && <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke={ACCENT} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
             {/* Text input */}
             <textarea value={input} onChange={e=>setInput(e.target.value)}
@@ -3578,6 +3644,7 @@ export default function App() {
           filPending={filPending} filUrgent={filUrgent}
           actionSheet={actionSheet} setActionSheet={setActionSheet}
           resolve={resolve}
+          switchToMobile={switchToMobile}
         />
       </>
     );
