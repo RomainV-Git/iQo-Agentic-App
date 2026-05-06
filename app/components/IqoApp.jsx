@@ -10,38 +10,32 @@ const IQO_GREEN = "#6DBE45";
 // variant: "full" (icon + wordmark) | "mark" (icon + "iQo") | "icon" (mark only)
 // size: icon height in px · onDark: true = grey letterforms for light backgrounds
 function IqoLogo({ variant = "full", size = 32, onDark = false }) {
-  const fg = onDark ? "#D1D5DB" : "#374151";
   const Icon = () => (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none"
-         xmlns="http://www.w3.org/2000/svg" style={{ flexShrink:0 }}>
-      {/* i — dot + stem */}
-      <rect x="3"  y="4"  width="4" height="3"  rx="1"   fill={fg} />
-      <rect x="3"  y="10" width="4" height="14" rx="1"   fill={fg} />
-      {/* Q — large circle */}
-      <circle cx="20" cy="17" r="9"  stroke={fg} strokeWidth="4" />
-      {/* o — small circle right */}
-      <circle cx="33" cy="17" r="5"  stroke={fg} strokeWidth="3.5" />
-      {/* green bar — brand accent */}
-      <rect x="18" y="13" width="4" height="10" rx="1.5" fill={IQO_GREEN} />
-    </svg>
+    <img
+      src="/logo.png"
+      alt="iQo Agentic AI"
+      width={size}
+      height={size}
+      style={{ flexShrink:0, display:"block", objectFit:"contain" }}
+    />
   );
   if (variant === "icon") return <Icon />;
   if (variant === "mark") return (
     <div style={{ display:"flex", alignItems:"center", gap:8 }}>
       <Icon />
-      <span style={{ fontFamily:SF, fontSize:size*0.56, fontWeight:700, color:fg,
+      <span style={{ fontFamily:SF, fontSize:size*0.5, fontWeight:700,
+                     color:onDark?"#D1D5DB":"#374151",
                      letterSpacing:"-0.03em", lineHeight:1, userSelect:"none" }}>iQo</span>
     </div>
   );
-  // "full" — icon + two-line wordmark
   return (
     <div style={{ display:"flex", alignItems:"center", gap:10 }}>
       <Icon />
       <div style={{ display:"flex", flexDirection:"column", lineHeight:1, userSelect:"none" }}>
-        <span style={{ fontFamily:SF, fontSize:size*0.5, fontWeight:700, color:fg,
-                       letterSpacing:"-0.02em" }}>iQo</span>
-        <span style={{ fontFamily:SF, fontSize:size*0.34, fontWeight:500,
-                       color:onDark?"#9CA3AF":"#6B7280", letterSpacing:"0.02em", marginTop:1 }}>
+        <span style={{ fontFamily:SF, fontSize:size*0.5, fontWeight:700,
+                       color:onDark?"#D1D5DB":"#374151", letterSpacing:"-0.02em" }}>iQo</span>
+        <span style={{ fontFamily:SF, fontSize:size*0.33, fontWeight:500,
+                       color:onDark?"#9CA3AF":"#6B7280", letterSpacing:"0.02em", marginTop:2 }}>
           Agentic <span style={{ color:IQO_GREEN, fontWeight:700 }}>AI</span>
         </span>
       </div>
@@ -2925,10 +2919,10 @@ function DesktopApp({ activeTab, setActiveTab, agents, setAgents, fil, setFil, f
       {/* Sidebar */}
       <div style={{ width:sidebarCollapsed?64:200, background:"#fff", borderRight:"0.5px solid #E5E7EB", display:"flex", flexDirection:"column", flexShrink:0, transition:"width 0.2s cubic-bezier(0.4,0,0.2,1)", overflow:"hidden" }}>
         {/* Logo */}
-        <div style={{ height:56, display:"flex", alignItems:"center", padding:"0 14px", borderBottom:"0.5px solid #F3F4F6", flexShrink:0, overflow:"hidden" }}>
+        <div style={{ height:56, display:"flex", alignItems:"center", padding:"0 14px", borderBottom:"0.5px solid #F3F4F6", flexShrink:0 }}>
           {sidebarCollapsed
-            ? <IqoLogo variant="icon" size={28} />
-            : <IqoLogo variant="full" size={28} />
+            ? <IqoLogo variant="icon" size={30} />
+            : <IqoLogo variant="full" size={30} />
           }
         </div>
         {/* Nav items */}
@@ -3130,3 +3124,4 @@ export default function App() {
     </div>
   );
 }
+
