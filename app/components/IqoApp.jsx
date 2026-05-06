@@ -5,37 +5,32 @@ import { useState, useRef, useEffect } from "react";
 const SF = "-apple-system,'SF Pro Display','SF Pro Text',BlinkMacSystemFont,'Segoe UI',sans-serif";
 const ACCENT = "#4F46E5";
 const IQO_GREEN = "#6DBE45";
+const AVATAR_RV = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAAArqUlEQVR4nLW9aZBe13nf+TvLXd61V3QDaKABkgBBUqRIi5QUmZJKY9mSynbZSsqeySRWOalyRVVxOZIzTmak5PM43yJ7ZpSyVZU4NTWRLQ0ly3JkLbFia5nIWihKXCSSIEDsvb77crdzznw4977dDTREkGZOVVc1mu9y7/8+51n+z/85FIDjdVhCCACklFhrcc6hlJr9d2PM7Pejq6ucPXuWe+6+h3P3nePE2hrzc22s9a+xVqCDAOcczlqkVBhrEAK00lhr6fa7XL9xjcuXLvHsc89z/vx5rl27NvsOpQLA4ZzFWosQYnaN1trX45b9ffM6A+icQwiB1hpjzOxiV1dXectb3sLb3vY2jh07zvz8HK1Wk+k0wTnI8xwpy8sRAikV1hhc+dkC/3DyIkdJhdb+4YRhRJ7ndLtdrl27xre//W2++53vcunypdl1BUFAnucIIV5X8OB1BrD6qawtDEMeffRRfuZnfob777+flZVVjMnJsnwPXAFSKaTQOOdAgLNmdlnVg6l+d47yv0kPiHEoJdBKEoQhUkr6vR4//MEP+cY3v8k3vvkN0jSdPdSiKPz3vE7rdQNQSYnDbw+lFO985zv5xV/8Rc6dO4dSijzPybIUpWQJhLcqJ4S3shIQZx0av1396xzWGJRWe5frIC0sUgcAWGMItMJaizGWMFTE9QhTOM6fv8Cf/+c/5y//8i/Jsmz2kF8vS3zNAEopZ08yDEPSNAXg7T/9OL/yK7/CfffdR1EU5Hk+sywhBA7rwS7fK5E4yu0PaCmRWYLJMvIs89ZcWg9CoKSkVqshoxqJMRhjkOVD8J9Q/eYojKVebyKV5KXzL/GZz3yGr/zlfwEg0BpTguicm7meat2plb4mAPcHDCEERVGwfnKdD/zar/H2t78dgCRJvDuT+7agFIB36kpIBA4hQDqByQvSdEqaJAR5jjC2+jKEAOfAWYt1FoFE1mrMrRwhimPGk4k3TCXKWxJYUW1zSZ7n1Ot1nHN859vf4Y/+7//ISy+9RKA0ALkpDtzXq9nir9kCwzAkyzIAfumXfol/+A/+Ie1WizRNMcYciMCUQcBvVYfAIZ1FCijSjNGgRzZNiLQmDDWhxdullGitkUJijMFYS55lZHnOpMjJnWNhYZGllRUsgtQYjHMoHVA4/23G2FlmgBDUazVGozGf+tSf8Mef+hMAlFKzzOHVgviaAFRSYqyl3W7zwQ9+kJ/7uZ9jMp6AtVjn0ErdsiU8jt46hDO4PKfX7ZBNxtRCTTOOCJVCCoEQDqUkSimUVDOfVeQ5eVGQZhlplpNmGcPxGB3GLB87TmNuHpRkkmYoHeIcM7+KOAhKq9nir/76r/i//t2/Y2d3Z/bAjTEz3/u6AigQPmJKbw1nz57lwx/+MGfOnGE6nSId4Kx/pRDY8uKpfJ0UWFsQSsVkNGRz4wa1MGC+2SBSEoVDCQiURgYSIUsAlQIBpjD+xxSkaUoyTcnSjCTPSQtDWljqc/McOXYMHUXkxmJKK9RKlwHO+esRPvDMzbU5f+ECH/u93+eZZ59BK4V13iNX/rFKoextAL0jAAPtk1cpJLkp+KmHH+GjH/kI7bk5hsMhQRAgBThbgJBYJAjp32wdSgLWEGhBf/MG3d1dFhfnqUUx0jkCqdBSEgYKLTUqKC2vygudfxDGGIrCkGUZxuRMphOm0xRjIckyJnlOrdVmcXWVer1JiiVzFiUVOEnlE/2DtuQmp1arMx1N+Njv/x5f+/rXiYKQLM9mgck50Mon8oeBeEcACiEItCbLc972d97Gv/id3yEMQ4qiKCMrCGeREiyAkzghfRDBIpxFK8nu5g2S3g5HlpaJoghnLZHWKCcItSYIFFIqhBIIKf3FudJqnP/dGEOapmR5hrOGLM0YTxNy65hkGWmeo+MaR44dJ2o0sEpiLAgnUTrwVujtESccRWGox3WyLOPjH/84X/zyl7wLsmVklmIWpQ8D6o4tMC8K3v7443zkf/sI4CsHay1BEPhSyTmEdDMAEQL/zEEJx9bmBsNuh5NHlogCn7/VohBnLIFUhGGAUhIpBKZ0FXJf6WWNpfKoPj1KydOEwhjy3DBNMkbThMFkjIoidBTTXFggarWI4xrGOKTUWCQOV1qhA+EwhfO7SEo+8YlP8Jk//SyhDijK6IwDexuY9CuB58ungkfe+DD/67/4l7MKQggxi17GWLSWOCEQzvtK/3QcWgh2NjfobW+xfuwokZJI56O4QqLDEK0kYRgipU9VhK/bkFKCcygpKYTP+YQtS0UlsFoipM8NrbVYF2KsYZxOkQKS4YDcGpSQhGHN+zVZXt6+qqby69ZafuM3foNut8t//eu/IgpC8iL3rsS+CgCrJLmKfveePcu/+lf/Gh2GTCcTdOUTy9cFQYCxxezfUkiEAy2h39lh4+oV7lo/SagFCoijAKk8OEJYgjBEa4lAgoQCU9bDchbJI6Uw1lIUBRiLwBCGjizziXoUhQgpyIuCwuak6RShJE5KxqJPdCTC4RAI7E3lITelLv/st/4Zg8GA733/yQNJ/6FYHfZHpZR/+sDCwgIf/chHaTYbTCcTgpIlqW7Mh/zSUSNAljUxjixJuHbpEqvLC9RCjXKOKNQESqKFQGtFFEeEYQmoUkit0UGA1sHsOoQQUOaEWmuU1qggROsQrYPyR6NVQByGREGIcJBNp2jnfFWTpqibDEkgcJYD95JlGY1mg9/+7d/m+LHjmLI0vTkluy2AVQ5Uof5bv/VbHF87znQ6JSh91+zJ7VuufIJV0htoybWrV3DWsLS4gM1TGlFIoBTgkEoSRRFSKgprKXA4ASLQ6PJHlnWzEAKhFFIptNYEWqGCABVGKB0ilfZwCA9yoLTPVbMCm+c04ri8UTlzLwdArIJEScFNJhOOHj3Khz/0IQIdlIHsVVhglbn/8i//Mm9/xzsYDoa+FmWPrroZQOsczvmYJIRgOp3S63Q4cfw4FIZQCoJAzixWSpBKIJSYWZ0qLVFpjdJqlkhXAUUqVVqnxjmBdeV7dYQOIpACKTVKaLQMwDmSyZQ48lbpxCHJ/SEGobVmNBrx2GOP8YFf+zWKMrm+LYA3U0ZFUXDu3Dk+8IEPMBmP0UHgfcc+BuNmNkNKn3pYKwi0Ymtri2a9TqMWg3OEYVjm2SW5KSVIH62FFKggQIcBKgqRWnuKS2tkoJFaeess3+ekRIcBYeyBU1ojpUKrAFkm3sonpkgEwnm3VIsjnLuVhdm/hasdKKVkPB7zq7/6q7z50Uexzs7c2k3G5q1CVlGvtMB//Ov/iGa9AdaVuY675cv2r72I5jBZwqi7y1wjRgkfcY0VGCeRMkQGEUKFSBEQxjWCuIbQIUEUo4MAGYQIpUEqhNaoMCKIa56+0hodRQS1iCAOiWohUkuEAqRPpZx0GGf8Q9UCrSXGFERBgC6Tc1Hantm3o24mhas899d//R8Rx/EMmwqvmQVW/q6Kuj/3M+/m0cceYzweHyAF9teI+790xrEZi5aSZDLFmYJ2u0WgvX9CKJTUCK39RUiJ1Aqh5IxssM6XX66sqctMrWRkBE76pN2UEDjnZjtBa00QBASBDz5aa6IoplarEYQBaZ6wsLhIvVbDvQJxUN2PlJIkSbj//vt5//vfPyMc9r/ngE0651hYWOB/+vt/nyLPZygfBtYt26B8OkoIRqMhca1GFIWlc7ZIBVLL2Y3qQKOVQgm5F2mtm203pdSsErFljjbj7azF7WsXwJ5LcWUtG4ZhCWKEAKIw4ujqUVrtNlW9ftt7KQ2lynWTJOH9738/q6urtxiSrC6qChzve9/7OHnyJFmWoUpW5bB1GKCyNPvpZEyrUZ8FDOcqv1cGgjAgCEKEUhiczy3cXtlWAVqRETPgwANegu7TC3ngpoqiQEgf4Wv1GqPRiN1Ox/tgZ2k1W7O0pCoIbl5VYl3ltUWes7qyyi/8wi/cwjLJ6g1FUTA3N8d73/Pe2d7fn8jeyRI40umUIs8JgwApZMnglCWZ86mKVAolD6YUe1Soz8WyLKPIq96JwRpbWuieC6kAu9kSwzAkjmOiMGQ8HjOZTEoiomB+YR4hxYzoPYxyK4pilu/6elgynox573vfy9GjR2cl7AzA6kPe9a53sbZ2nDRJZxZ5xwA6h5aSPEt9/St9Ml1Zi5QVrey7bvuz/6K8OWsspigwReE7cpX1ey7Kb+fypipmxu37d1UdRVE0A9Na61nuIEAI4UvI0j3sB22/P9xfiVVGZIxhcXGRn/3Znz3geyV4EjGKIt73vvdhzK2g3YkPlEIgHeRpXpKinoqXUpQpTslwSYEVYMq4LhC33IC1e4m8AJ+K7P/OKtBYMwOpAi+OYwKtEULMunHG+BJQKkUcRWUNfzAYvLJ9eGt/97vfTb1enxGvsgoUDzzwAKdPnyZNkwN9jNuuMnKyxx3gnKfcpdqLTR444ZkVufe+/Y0cKYUH0jrETeAJS1kzl1tuH5HiL2MfuIIDWYO1Dq0VWZb53QQEUUQcxWVv5c7W/mCydnyNRx99dPZ3WX35448/7h3tnX7oDERRUlceCIf3D2pfpEKAFdXu3bvsGcdmvUXNmJ4KmPI1pmwmOeNfY0yBKbf4gVTE+W1bUW1UXgNHmqZ0u10KY4hqfouLQxLjw8CrMgBZ+u2qcQYgjTEszM3z6JsepchzlLj1Q51wIDyTJhHgBE5IjHBYYRFYHIbCFFjrkB5OlJNI61lWYV1ZFQikKGtXGeJQWKFwQqICjRC+takQqDLdlUKghJplBVVEtsaQpImnqYS/ThUowIIzWFuAMSgUNrWYvKx3Y01BgVAKJdQt9zt7uLN2hITy+ou84I0PPcTR1VWstWjnHGfOnOH0qVMMh8NDy5XK4gRUmW0ZBUGKko3G4XBoJRFVuVS+VglVtjElzkKv1yfJcuJaHSEkxhpqUYgSoJUg0t7RV8ElDEOAAxHXGIt1YKy30CCMEAKmyQQhVal+sEitsBZMYWk2Wugg8GDLipmu7uwQun5/ulIGFpMXrCyvcO7sOTY2Nz0f+MADDxxgJPY3zf0Hlc5+lmgIHwJE6eCtxeQF1uSosl05o/qlorAGIx2BVnQ6u/QGQ8bThE63x3A4wpiiBE5z37l7mWu1iWNfRVRphbXWpzZFwTSZMs1SpmmGKQqCMKAWxQgc4/HUp5VSgZC05upMJgWFszMLd0WBML7sE8prcF5pVWAWpkBIwRseegN//Y2voQWChx56yJtjGb1u6dLve1LeqPzTk86Vvd0cYTJsnkKRUba9kFpROEsQ+R7yy5eu0NnZYafTZZIkdHsDxqNxmZKkaCkZ9HscXVml3W5z6tQp5ubmZj5oNBqxs7NDp9thtzfg0tWr9Hs9oiik1WqytLhErVYD4Zifm0cGAe25OaKGIGrWCEIN1iIKSyAExuSzruHtAKsMaT8LXxQF9993v6+oTqytsba2RlEUtzbE932YcKX1yQpAD6ewDpenxFoSNhsUSUKR5TMr1oFmNB6ztb3NsNcHazl69ChOSE45iOMayXTK9vYGNs9LxsSRZRlpms44uul0SqfT4eLFi3Q6HTrDEde2d0gnCWGgGYzG7HR6XrJR5LTbLU6cOM6R1WUCFRBEIUEYYJIEM50QKUFUqzMYTO8omFSuzZbB7uixY9x1113oE+snaLVa5Hk+c9K3Mi1u70FVJZcsQXSWdqOBzFOkgzgIGUwTlBKgPBFaFAatQlZXV5lrNen2B6ggRKmAXr9PlmXU4hpWa+IopNVszdoG1fWkaUqv16Pf79PtdBhnBUdXjnHs2DEWl+ap1Wo4Y0imE/r9HpcuXeHixYucvfcMndGY1WabWi3i+Wee4cdP/QChFA8/9mbGo7Fvw3Kwxr3ZEmflqvRSkbl2mxMnTqCXFpZoNBqMx+MDL7wJ/1ut0nn5RSAEzTgCKUmzFKwlCLRvMOGDTL1e88gby5UrV+gNhiAVP/7xC+zs7pJlKefuPcvJteOMRiO0VDSbzVkloJTCGMNwOKTf7xOGIasLS9Ra82xubvDShRc5dvQoiwuLNOoxR48eQ0jFzuZ1tjY2cWHd+znreObJ7zPc2aXeaPDis88xd+woSeYFAa9mBUHA8vIy+tixYzPT3M8JHgCLKpDMlHkgjDdC61CufDJCeCerPXM828ZlBTDs9SmKgvFoxMqxY9TqdbIbNwh0wD333M3p9XXOv/A8R1ZWCMtaUwivzLLG53cLCwsUeU5jYYHl42s8//yPuH71KudfeJH1kyeo12ssLi5y/NgxjiwdodQY+UTeGBpRTKpDpDEUyZRQKqa2QMjD05nbLWMtq6ur6Mr/VTXfYVv4MEStc2gJ0vqmeJKlXgOY50itcdZH8ygMfNsxCom1Iq7FtOcXOLK6yvKRVc6cOQtY1tdP4Zzl+PHj1MvoW1FfQoiyTxJQr9ep1+vMLS2zunaSu++6i+l4xPz8PI88/EY2tzYZ9PuMxyNWFheoRxG9shGfpqmXkDiHyw01HeCK29P1t719ITBFwdraGrqKcrdjmoFZpHKUFUX1OgsOy9QUUIK/uLDIcDwCrA8yUhBFIUFNUotjmu055hbmmUymLMy3aTcbJEnCZDjwsreyjNRSEQYefGcszlq0VARaE+oArGXY2eWtb3qEhx+8DxAk6RRsztrRIzRaLZbbc0gn6G1tIjAU+ZRBr4sQEqk0IgzIrPFtglcpsbLWsriwiK7Vages77BV6UQszPJOgcTaAiskU1tQCxXL8RJxo84zzz2LNYXnAUuwpVJIa5FC0Wq1iOOYNEmYFDlxoIjn2wghCXSAKknVQGlsYUA4nLFEQYB0YIoCVUrk0kmCFJBmGc5kHFtdIQg1YRyy1FomHWeEahfhDONhj26/i8gsiyurBI0WRnpDEM7ntjeXmrczKuccYRB4AG+uK29ZQszydSomqhQbeSrJkhaWqKZJ84zCFEgbeD0y4KzDGusp/VL3EgQB9Sim1WjONNXOOdJpgivMTGphjMGKvTq50WyU1yFnvJ+UfrtLLZBCMk0nM8VCXmS051osLCyQpFkZ3Q3thUXCICStctzDi5FDoNjDqFareQD301SHW2EVpcof5y0QYXE4jBUEQtDt9QjCAFFqoo0JD/QRql4IwnfKrN3TpPivcdjAYNxe6ZRlmaflS07OOUe90QApcc7SaDR98gw4YcuHVkcIyIucSZpw9OgxTq+vY3NDa34eYQSt+Tmm0mu1ca/sA29uODnnaDabe2zMT/SBB1bF4kmc8xfghASpcQiub2ywtb3tJWj2YP1qraUoSq1K4FuQSilPv0fxjGoX8iD/VyX3zjmSJCHPc1rNBo24Rqi0V3KVjJDn7TLyPCcp1VqLi4uEOvDXBIhAo6IIY503hL/FkkmSzG7u5v7ozCrFvrLblZycfyFOSLzaTrC4uEi90aDb6ZYcnMGVlmYKHwictbMmUaC8iiAKwlkjyeYFRb5PnM5eg6ji5NI0QUlJo1kjigMCJQhC3xsuMkORecVWluVktij7GgWj8YgkS1k8ukpqitIADjeaKgfdHx9u3p1pmiInk8kMqKoXcusSe8jt9fIBgRMCKyW5NeS2YGl5GR0E9IdDjLHkWY4pjHfSFqIgIAgDwiDwmphKWWUtJs+9+rS0MufcTBGx/xr7/SFpls4suKTVfbdXeIlHkeWMpxOyIsPhiKOIZJrQaLdZv/tuUms94cBPFg/d1vKk9ABWtHf1xztdntryIFp8o8hYh1ReSTCZTHwtiytnRLJZHemM1/sVuZesJUnCeDhkNBzPxiUq3aG11hOqpRuoZk4m4zFFluKcnSlHdVm1gLeOwWBIbgxFnlNkGUGgqTdbOCWY5jlOCjiE/3ylVfnB0WiE7vV6MyuoLvqWN7BndxV4PuzvMTWFKSisQChLHEdsbvbZ3d31jtYJMJaoiCisxVlHobxvNEVBMpmWsl2DLMWWYRRS5MWsx+GFSL5hpLVhNBwyHAx8oyiKQQhsnlPkBVmWkSQpkyQhatWZTKds3NhgPBwzNzdHp99HaOmBL2fwXu2SUjIcDtGbm5u3CIcOM+lqGGZGxlTBy/m/GqEZ5Sn9nR6TxI8i7HY6tFst2s0msl6nMAWRDcGW0uAyvZmMJyglvcjbWkIdkKeeli+MYTqdkpcK/VqtRpHnpGlGfzBAKk2t7KM4C9PJmDTNmEynTKdTVByS5+X19AacOrtKbzJB6sBL217FkEK1U6uyd2NjA33jxo1ZwV4UxYwTPPDGmxq4XuVU9URLmkcEFELRXq2xNJ2yvbPNdDrh2rUrFEeWEeIIURggKdDSonVAlqRMJlOEkLTb8xhjmEzGPPviBba2Nlk/fZqllWVUEHDx4kWefu451o+v0W63UVKRZwVZ6gXhCEdWWEaTMeNpyk6vz9b2BicCQa/fp7V4hEluSHJDnhlwnppzdk8nU6VOVdvyMEa6WkEYcuXaVfT29jZJkswc9h3VwrdZrkxBGs0mCC9L297ZIdCKOIpR7TlUHGEddDpdJtOEMAw5cmQB8FLiMIpRgWJ+YQGU4EfPP09/OGQ4GtHtdun1urz5sTcz12phgCTPEMqr78eTMePJhGsbW2zubNPtdlg5eoRmq41zsLC0yHA08qJzpfcaRTfJdw9r6+4HTwpBkefsdnbR169fZzAY0Gw2D8h2Xz163jcaY6jFNYRUTKZThIPJdEpW5ABkmWFqUm5sbqOVZi6I2NzeRQpFYQoGgyFoRWtxnrBW4/jJE8itTcJahFSSVqvF/OICSmp0pJE6wJa5X2YKxtMp4+mYwXCAcbC1vcPyygrTtEDrAGMtWoUUzos8jTGeXTpk7QeyYuyNMUilGA6HXL9+HX358mU2NjZ48MEHGY/HP7EmfiUEpZRgDHGtTqPRopcmaAHWCcbjKfPtHFGrMxwO2NreJc9zuHyFRrNJo95kMp2wsbGJEA4dhaR5xtmzZ4niiJ3OLtudbTKTowJFs95ESj9+MT8/Ry2OMM4ySaeMJmNya5Fa02i2fK4nlS8nQx/IhBA4Yw+6p9uAVzFDFZC1Wo0rV69w/sXz6NwUPP300zzwwAMHeqA3qwXuCMJyUkmFAXOLSwz7fbTyT246mTCZTKg1Wmxt73Lx0stMJhPm5uZZkYrt3S55lpIXBmMLtCk8dziesrO7w872DkVuuXF9g063x8Kc95nOGo4cOcLJE2vEtZg8L9jt7FI4aNQbHF87Qas9z2SngxMC43w/WIKfgpdVVXUwUd5PJOzvi1Rp0gvPv0CSJD4OPP3000RRNKs1X8sSZc/Ta6UFi4tLJFlGENaI4thLd5UCIZgmvpc7GA7Z3Npic3uLuBYzv7jI8soRmq0WURRz8uQ6R1dWWZxboBbVmW/P06g3cMbR7fXZ2Nji5UuXOf/ii1y9dg1rXTmq5cu6KI5ZPLJClhekeYZUyj/kUmPjDeTO7rdK7/I8JwpDnnrqKQBfC58/f56rV6/OVJi3gvPK2hhc2eLEl27zC4vUGy2sA1X2NybjMabIaTRrKClZXVnhpx55mFBrup0OWZoinKNZbzDXaLHQbFPTIfUgohXXqUURURTRbDTo9Qdsbm9z7dr12bhrlWALIYjCkEatQb3epNPtkecFtmxQvTYT8VYZRRFb29s8//yPAdBaKTa3t3jyySf5+Z//eZIkObQzd8dLCIy11JoNjq0d5/KFF7ELLWpxTJomDPt9Th4/wbXLV3HO8eADDxDHNV6+eJGiUlgJSZbl5NOUZ37wQ8IgIBmNfFsRSX/YZ3FhgbvvPsvLF16kXq8x154jS1PSJEFLSbvdYm3tOOvr63R6fUCilB/1ei05RlVshGHIt771La5cu4aQwveFAb72ta/xnve85zWDJ/ZpX6xzCOn7IleuXmO+WaexsoxWkvF4hFKSIFDMzc2T5Tn1Ro17zt5DluY4IAoihPV6lnxtjSgI6fa6GByj8YTuqE+t2abeqKOFpdVssLi4yNVrVymKgnZ7jmajyfqpU17EWWpwKoXdq103+8Zvfetb5T0LdGF9T+CpH/6AK9eusn5ynel47OcypMQUBqn2ROY/AUJkWRcjBYVzHDt5kvrcHLvDEcfWjoOQSCXZ3e0w15rn9MlTNOp1TG7ITEK92URISSOoE6iArMj8JHuWciQ+Sq/XLR25RCpBIC2RhigO6A/6dHo90JoiN/R6A6x1bO3uMEkzhNJ+CHume6RU8FCOxd4+WIqyoyaVYmd3h7/5zrf9663z0g4hBJPJhK985St88IMfnPFrPufx1P0dSd72faGxhoXFRd70pjfxgye/xzRJkXFIHEQ4Y1FCEYcRcRiRG0OaZ+xsbTOeTmjUmzNWxZb0V55lBErjpCdK62FEFPqG09WrV6k3G17cVKYcy4tLLCwuYkUp7lQSY9ysxeAb3NxxN7Mwhnajwec+9zm63e5sS2vY299f/sqX+Xt/9+/RbDT2tDJlfvfKFngLjFhrOXnyJN//7ne4cOECZ+86TT2uIZUiS1O6gx7WWWpxjVa9wc72Di+8+AKJNchA06o3SJMptrAUpqBZb7A4v0AQBh4Q61hcXKQ/GjEYDomimCxNWT2yyl133YWjFKZbi3RulinsX97qXhlFVZIHX/rSlw78XVZ1n1KKrc0tvvSlL9JsNMnz3LMzhb3j1GZ/lJZyj/Y+c+YMW1tbbG5tsrW9zTRLya1lt9tjPJkSBCGBCjiytMSZu++h0Wyws7vDhZcvcP7CBTa3tzz3JgWNRp12q4VEMk0S2nPzhFGILQyj8Zher0er3aIwhd9igT/tw+7LbWf5LbeSpIcta33r4Ktf/SoXL148ECd0lShW4sHPf/7zvPc976XZbPrJyNdWFpdfbFBScu7cvexu3mA4GJYssMNkvhddn0xoTSfMtVosLSwx315gdX2N+tNPc/HiRaKm5tSpU5xeP0WzVvNlooOdbofJOENKQZ4bxtMpUinW19eJ44id7S3aS0scXT7CNMl8ZSLFTHC5X+H6kyCssBkMBnzuc58DPFdZHbghq8rDs9GS6zdu8MQTT1Cv12cMtY+sr/6gGim91iYMI+69917yPCdNEybTKZu72+z2OgwmI7Y7u5y/cIFnf/QjLly6SCA1D93/AKdPrnNi7QRHFhYJlUY6wXQ8YXdnh8kkYZqm7Pb6pGnOeJqgdcjDDz8yG7TZuHGD6XTK8pGlWVfPuYPiyZtLtv0WWlVmtVqNL3zhC1y4cAGl9iTDcPO8sPPDzU985gne+c53cu7cOUajEUGgblsz3vy0Ktki+Ccty4tYWVlhe2WFCxcvMk0Sf0yTtVzf3GC318WkOe1mE6UU4+nEVyatth9CVIrdTmdmCf1+DxlEjKcZk+mEnW6HxcVFFhcW6XY73m/mhkle0Gw2aTZbCLFZCoPKEbAypzHGwiGyjgpkrTXXr13nk3/8yQN8YLVz9S1vApI05Q8/8Yf87v/+uyXFZV/TVq6kaUGgSRLLffffzzTJuXTlMq25NpMkpTCGINAsLyyy0+vTbNTJTMFk44Zndmo16o0GaZqys7ODxdHr9wiDGoPugGmaIJTvM49GI7qdDnEck2UZd917bnb62ze/+U0ee/NbqdXqpYzP101CiFkaU639Ld44jvn3f/Tv6ff7e2zMPsbqloaAcz7ifO/JJ/nsZz9Lo96guAMF5+0AnBGTQlCv13nwDW/gxIkTvmmEwEnJJEm5trHB9a1NZBAQxDU6/QHPvfAiz774Alc3N7lw7RrXux12hkM2ul0uX79Op9elN+iT5zmj8ZTjJ9aolRnE0vISp0+fptPrEgSa4WDIn/7pZ4nj2uwoAefsbbML5xyNRoMvfOELfPWr//UA0XJAP33LG3FQtvT+w3/8I37w9A9oNOoHiIZDKX9nsZhZ985VI4FS0Gz4OtZZS6td540PPcjy4gK97i42TxkOely9fo3cWS5evcKFK5dJTE5uDZ3+gOtbm54INYZOp8NgMKTb6ZBkGbbIqYeK++66i7lGnVoUMkkz1u+9DxHF5Knh0qWrLC2s8MMfPMuT3/s+iwtLWGOxzuybUN1ra1RzMy+99BJ/+Ik/AOFmEwM3r0NbUpXUIkkSPvZ7v8dkMiWKoluewIEfr1GYAQcW5zy5inWYcvwr1Jq5VpMHH7if9RMnKLLMy26xTKcTdnZ3uXrtKju7HQpnkUqSTBNGgwHDXp/uzi7ZZIqSAmtS7rprnbe+5TFWlhaoRzE7Ox1OnDrN6vo63cGYNMkY9EY0Gi0CFfH008+ys90hCmOCIJw1svLcTxhU3F+SJHzsYx+jPxjOzk04zIBuAbBqJle6vvPnz/Nv/s3v3rL3D1uilH046xDWn0IUBooLL56nyDKk8FOTcRT50YpHHuHcvfdxZGkZiaC7s8t0NKJIM7o7Oww6PfIkZTIYsrO1xXgwJJCKWhCxND/PYz/1CD/10Btp1BroMGRnt0N7boHH3vxWBj3f0kRAEGukEhhnGQwG7O7u8tyPfkyvN0DpkDwv0GXpWk0FfPzjH+eZ554l0GoWGw5btwA4mwGT/nysIAj4+jf+P/7tv/3YzAoPB49yqmhPwTDfbjPs9nnh+eeRQhIKjTUFUggCHRCFIfeduYe3PPYYjzz4EGtHV4kDjRaSdqPJYnuOWGsoDO1Gk5XFJe4+dYrH3vQm3vbWN3P/2XvL3DBmt9PFInjHu/4HCuOYprmn7wOJVppuGQT6/SHP/eh5vvJfvspT33+G4TihXq+TFT41qTfqfOITn+AvvvTFvTbvT+gRHXrsyX5G2lp/6tAXv/Rl2u0Wv/mbv8lkMqEoiluYm+pQxWrKvdlocv7Z5xj1+0jrkIAWwjffhfDnYFnLfLvNI298mHvPnOX6jRuMS383nU5RShLqEB1o4iimVq/RqDWohRopBSrQ9AdDxpOE9/zCL9KeX+TG9g7G+Jm7MNAUpqDX66GDkBsbm3z+z/8CYzJ2d3a4+PLLPP6On+bMmXsIw4BPfvI/8cef+pOZrLi8sRnbdMcA7j80VgpBHIV86tNPYK3lgx/84CyhrJywUhpjCpQKyLKEdrOJsd6vFXmGFgKlKjG3Q0tBI4r99I/1hyjqZova6ZgsT0sNTIoUEl2SG2EY+qklqQnKQ3cG4wm7/T7vfPe7WVtfpz+egBCzZFcFEaPxlP5wAAgKKzB5RhxpeoMh3/vu93jmuWd4/PG30ens8OlPf9prdGbnt/5kCuwVTy6i/JA8z9BK8v8+8VnG4zEf+tCHZiWNVF65rlVIVhQ4oQjjGOd8QPFn/xUEgaQ8qBepFShJiEMUBUp5izLGkiUBcRh5YbgQBErPmu5+PttbxCRN2O33efRtP83ZB97AKEnIjD9eRwl/UqEOa2xfus6gP0aVepxcgAo01haEzTpg+eQnP8lg0NtLV2bG9JOxuSMArXWzoWmtFH/xxS/T6/f557/9YZaXj5QKf0FucoSUZInXI9dDTRCGFNaQ5V7cmBSZ1zuHAdaUpRV7bUMhBI1ahC3MjKGufKp1/sassSRFTncw5Nz9D/LYW9/GtChIjSXJU/IiA1dtP83m1i55brDWa2HCKMRhqDdqjEdDNm5c82NuSvmS1blbC4fbAHlHyppKueB9oz996L/9t7/hf/mdf8mTTz5Jq+XnOqK4hlKab/3Nt0iyFKk1cRxTWC8gQoDQElcekSIDX6VorYjjmLDUv4RhSK1Ro91q0p5r02g2COOIMAoJysqo3xtw/MRJHn/Xu0ArEmMprPNjj7bAuYIwCJgmCddvbKJ0SFAekeKAINAMhgMuvnyRbrc7Q0nAq+I+71iaVBh/fp4xliz3AeTy5St89KP/miee+AyDwZhnn/kx/89/+mO+9+RT1ButskwLwdrZ0aBaS6z1I6tKSBr1BvVa3adA1lGLaqgwQochQRAQKn+2oBaiPITbkeaG+SMrvOXt70DFMWmee82hMzPtjpSKIIwYjaZsbexQ5BlKQaMWEoeKTmeHF5//EWkyoTq/ejaEfZuDxg5bd7SFzb7UpfroikNM85zf/z/+Tz796c+xvLzC4vIStXqMMY64VieMIlrtNqPx2Dd86jWk8GMGSkUoVHkQoyRNMiwWQlkJscEUYAqE8ycjWSQ6rPPgW95Mc2mZLEuxxiBsgSgKP7RdHrQohOT6tRt0OrsEgSRU0Bn1uHz5Zbq9Dlqrcupzf8/jjrG7cwBvt3wHzde5Nzau0ul2WR2ucv/99xNGIYuLS+zMLxDXGkzTjPE0pR1FCARFkWNdgXW+WxZF/nO8A98Tfs/qGuFPLDKy4NxDD7K8skJelpcV5W+r4wq88B4n4OLFl9BakOcZl69c4sqVS2RZdRSAecUo+98FwJsF6UIIgkCR5wmXL12gs7vNH/zBH/BP/8k/4Q1veAM/PHuOrevXGIwTonodXc7PFYWhOpdHhopQhXuaamuwhcMahxUSG0gmScLpe89y4p7TTLMcY70IPS8MxuxnlwX1epPCwdVrl7l44SWuXr9KkowAsY/ad38r8Pw33Wlr/hAAYU8rN/s0RClctCwvLPI//4+/ymNvfJhhr8ORpQVWl+cAPzxYq9VYWFjw510BFq+PFtYPNud54c8MNJbcWY6tn+LI8eMMpwmtVhuBYDpNGA5HnsLH/08IhoMRTz31ff7661/nT//s86TJBLj5uOM9CF6rGuM1A3jbDxN7wypSaD+PC9SV5t4z9/DGB+7j7zz6CCdOrNFoNAkCRavdJorCMghYTy6YAlOY8iReQZoXLB89ypFja3zr+9+l0+sz12qzduwEJ06sEQQhl69eYWNjm+99/0n+7M/+jBdffJHJZLJ3XfukHBVef9vtC68zgAeXP2FIST/YXE2atLXi7L33cnr9BA+94QEeffQRTp08MTv1KEummCxBCUVmLLmBWmuO4+vrvHz1KpevX8NKQTKesrO1Q7/Xo9Pr8sNnnuWZZ55jNB7Nbi2MQrJSc/3fa/3/PI3af5lpzoUAAAAASUVORK5CYII=";
 
-// ─── IqoLogo — SVG inline, no external file dependency ───────────────────────
-// variant: "full" (icon + wordmark) | "mark" (icon + "iQo") | "icon" (mark only)
-// size: icon height in px · onDark: true = grey letterforms for light backgrounds
+// ─── IqoLogo ──────────────────────────────────────────────────────────────────
+// Utilise le PNG original dans un container arrondi fond #111827
+// variant: "full" | "icon"   size: taille de l'icône en px
 function IqoLogo({ variant = "full", size = 32, onDark = false }) {
-  const Icon = () => (
-    <img
-      src="/logo.png"
-      alt="iQo Agentic AI"
-      width={size}
-      height={size}
-      style={{ flexShrink:0, display:"block", objectFit:"contain" }}
-    />
-  );
-  if (variant === "icon") return <Icon />;
-  if (variant === "mark") return (
-    <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-      <Icon />
-      <span style={{ fontFamily:SF, fontSize:size*0.5, fontWeight:700,
-                     color:onDark?"#D1D5DB":"#374151",
-                     letterSpacing:"-0.03em", lineHeight:1, userSelect:"none" }}>iQo</span>
+  const Badge = () => (
+    <div style={{ width:size, height:size, borderRadius:Math.round(size*0.28),
+                  background:"#111827", display:"flex", alignItems:"center",
+                  justifyContent:"center", flexShrink:0, overflow:"hidden" }}>
+      <img src="/logo.png" alt="iQo" width={size*0.85} height={size*0.85}
+           style={{ display:"block", objectFit:"contain" }}/>
     </div>
   );
+
+  if (variant === "icon") return <Badge />;
+
   return (
     <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-      <Icon />
+      <Badge />
       <div style={{ display:"flex", flexDirection:"column", lineHeight:1, userSelect:"none" }}>
         <span style={{ fontFamily:SF, fontSize:size*0.5, fontWeight:700,
-                       color:onDark?"#D1D5DB":"#374151", letterSpacing:"-0.02em" }}>iQo</span>
+                       color:onDark?"#fff":"#111827", letterSpacing:"-0.02em" }}>iQo</span>
         <span style={{ fontFamily:SF, fontSize:size*0.33, fontWeight:500,
-                       color:onDark?"#9CA3AF":"#6B7280", letterSpacing:"0.02em", marginTop:2 }}>
+                       color:onDark?"rgba(255,255,255,0.6)":"#6B7280",
+                       letterSpacing:"0.02em", marginTop:2 }}>
           Agentic <span style={{ color:IQO_GREEN, fontWeight:700 }}>AI</span>
         </span>
       </div>
@@ -788,7 +783,7 @@ function AccueilScreen({ agents, fil, onAgent, onFil, setActiveTab }) {
       <div style={{ padding:"14px 16px 12px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
         <div style={{ display:"flex", alignItems:"center", gap:10 }}>
           {/* Avatar */}
-          <div style={{ width:34, height:34, borderRadius:"50%", background:"linear-gradient(135deg,#6366F1,#8B5CF6)", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:SF, fontSize:13, fontWeight:700, color:"#fff", flexShrink:0 }}>RV</div>
+          <img src={AVATAR_RV} alt="Romain Villar" style={{ width:34, height:34, borderRadius:"50%", objectFit:"cover", flexShrink:0, display:"block" }}/>
           <div style={{ fontFamily:SF, fontSize:18, fontWeight:700, color:"#111827", letterSpacing:"-0.02em" }}>{greeting}, Romain 👋</div>
         </div>
         <div style={{ display:"flex", gap:8 }}>
@@ -1701,7 +1696,7 @@ function ProjetsScreen({ agents, onAgent }) {
                             {!isUser && agent && (
                               <div style={{ width:22, height:22, borderRadius:7, background:d.light, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, flexShrink:0 }}>{agentEmoji(agent.name)}</div>
                             )}
-                            {isUser && <div style={{ width:20, height:20, borderRadius:"50%", background:"linear-gradient(135deg,#6366F1,#8B5CF6)", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:SF, fontSize:8, fontWeight:700, color:"#fff", flexShrink:0 }}>RV</div>}
+                            {isUser && <img src={AVATAR_RV} alt="Romain Villar" style={{ width:20, height:20, borderRadius:"50%", objectFit:"cover", flexShrink:0, display:"block" }}/>}
                             <div style={{ background:isUser?ACCENT:"#fff", color:isUser?"#fff":"#111827", borderRadius:isUser?"12px 12px 3px 12px":"12px 12px 12px 3px", padding:"8px 11px", fontFamily:SF, fontSize:12, lineHeight:1.45, boxShadow:isUser?"none":"0 1px 2px rgba(0,0,0,0.06)", border:isUser?"none":"0.5px solid #E5E7EB" }}>
                               {m.text}
                             </div>
@@ -1752,7 +1747,7 @@ function ProjetsScreen({ agents, onAgent }) {
 
 // ─── PROJET DETAIL ────────────────────────────────────────────────────────────
 
-function ProjetDetail({ projet: p, agents, allAgents, onBack, onAgent }) {
+function ProjetDetail({ projet: p, agents, allAgents, onBack, onAgent, embedded=false }) {
   const [tab,         setTab]         = useState("overview");
   const [showAffect,  setShowAffect]  = useState(false);
   const [showChat,    setShowChat]    = useState(false);
@@ -1809,30 +1804,29 @@ function ProjetDetail({ projet: p, agents, allAgents, onBack, onAgent }) {
   ];
 
   return (
-    <div style={{ position:"absolute", inset:0, zIndex:50, background:"#F9FAFB", display:"flex", flexDirection:"column" }}>
-      {/* Nav bar */}
+    <div style={{ ...(embedded ? { display:"flex", flexDirection:"column", height:"100%" } : { position:"absolute", inset:0, zIndex:50, background:"#F9FAFB", display:"flex", flexDirection:"column" }) }}>
+      {/* Nav bar — tabs only in embedded mode, full header in standalone */}
       <div style={{ background:"#fff", borderBottom:"0.5px solid #E5E7EB", flexShrink:0 }}>
-        <div style={{ padding:"14px 16px 0", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-          <button onClick={onBack} style={{ display:"flex", alignItems:"center", gap:4, background:"none", border:"none", cursor:"pointer", color:ACCENT, fontFamily:SF, fontSize:15, padding:0 }}>
-            <svg width="9" height="15" viewBox="0 0 9 15" fill="none"><path d="M7.5 1L1 7.5l6.5 6.5" stroke={ACCENT} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-          </button>
-          <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-            <div style={{ width:28, height:28, borderRadius:8, background:p.color+"18", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16 }}>{p.logo}</div>
-            <div style={{ fontFamily:SF, fontSize:15, fontWeight:600, color:"#111827" }}>{p.name}</div>
-          </div>
-          <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-            <span style={{ fontFamily:SF, fontSize:11, fontWeight:600, color:"#10B981", background:"#DCFCE7", borderRadius:8, padding:"2px 8px" }}>En cours</span>
-            {/* Chat button */}
-            <button onClick={()=>setShowChat(true)} style={{ position:"relative", width:32, height:32, borderRadius:9, background:`${ACCENT}12`, border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke={ACCENT} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-              {unreadCount>0 && <span style={{ position:"absolute", top:2, right:2, width:8, height:8, borderRadius:"50%", background:"#EF4444", border:"1.5px solid #fff" }} />}
+        {!embedded && (
+          <div style={{ padding:"14px 16px 0", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+            <button onClick={onBack} style={{ display:"flex", alignItems:"center", gap:4, background:"none", border:"none", cursor:"pointer", color:ACCENT, fontFamily:SF, fontSize:15, padding:0 }}>
+              <svg width="9" height="15" viewBox="0 0 9 15" fill="none"><path d="M7.5 1L1 7.5l6.5 6.5" stroke={ACCENT} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </button>
+            <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+              <div style={{ width:28, height:28, borderRadius:8, background:p.color+"18", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16 }}>{p.logo}</div>
+              <div style={{ fontFamily:SF, fontSize:15, fontWeight:600, color:"#111827" }}>{p.name}</div>
+            </div>
+            <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+              <span style={{ fontFamily:SF, fontSize:11, fontWeight:600, color:"#10B981", background:"#DCFCE7", borderRadius:8, padding:"2px 8px" }}>En cours</span>
+              <button onClick={()=>setShowChat(true)} style={{ position:"relative", width:32, height:32, borderRadius:9, background:`${ACCENT}12`, border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke={ACCENT} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                {unreadCount>0 && <span style={{ position:"absolute", top:2, right:2, width:8, height:8, borderRadius:"50%", background:"#EF4444", border:"1.5px solid #fff" }} />}
+              </button>
+            </div>
           </div>
-        </div>
+        )}
         {/* Tabs */}
-        <div style={{ display:"flex", overflowX:"auto", padding:"0 12px" }}>
+        <div style={{ display:"flex", overflowX:"auto", padding:`${embedded?"8px":"0"} 12px 0` }}>
           {TABS.map(t=>(
             <button key={t.id} onClick={()=>setTab(t.id)} style={{ fontFamily:SF, fontSize:12, fontWeight:tab===t.id?600:400, color:tab===t.id?ACCENT:"#6B7280", background:"none", border:"none", cursor:"pointer", padding:"10px 8px", borderBottom:tab===t.id?`2px solid ${ACCENT}`:"2px solid transparent", whiteSpace:"nowrap", flexShrink:0, transition:"all 0.15s" }}>{t.label}</button>
           ))}
@@ -2208,7 +2202,7 @@ function ProjetDetail({ projet: p, agents, allAgents, onBack, onAgent }) {
                         </div>
                       )}
                       {isUser && (
-                        <div style={{ width:26, height:26, borderRadius:"50%", background:"linear-gradient(135deg,#6366F1,#8B5CF6)", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:SF, fontSize:9, fontWeight:700, color:"#fff", flexShrink:0 }}>RV</div>
+                        <img src={AVATAR_RV} alt="Romain Villar" style={{ width:26, height:26, borderRadius:"50%", objectFit:"cover", flexShrink:0, display:"block" }}/>
                       )}
                       {/* Bubble */}
                       <div style={{
@@ -2584,96 +2578,17 @@ function DeskProjets({ agents, onAgent }) {
             </div>
           </div>
 
-          {/* Detail tab */}
+          {/* Detail tab — full tabbed view matching mobile */}
           {!openChat && (
-            <div style={{ flex:1, overflowY:"auto", padding:"16px 20px" }}>
-              {/* Progress */}
-              <div style={{ background:`${selProj.color}10`, borderRadius:12, padding:"14px", marginBottom:14 }}>
-                <div style={{ display:"flex", justifyContent:"space-between", marginBottom:8 }}>
-                  <span style={{ fontFamily:SF, fontSize:12, color:"#6B7280" }}>Avancement global</span>
-                  <span style={{ fontFamily:SF, fontSize:14, fontWeight:700, color:selProj.color }}>{selProj.progress}%</span>
-                </div>
-                <div style={{ height:6, background:"rgba(0,0,0,0.1)", borderRadius:3, overflow:"hidden" }}>
-                  <div style={{ height:"100%", width:`${selProj.progress}%`, background:selProj.color, borderRadius:3 }}/>
-                </div>
-                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr", gap:0, marginTop:12 }}>
-                  {[{v:`${selProj.travaux.done}/${selProj.travaux.total}`,l:"Réalisés",c:"#374151"},{v:selProj.travaux.late,l:"Retard",c:selProj.travaux.late>0?"#F59E0B":"#9CA3AF"},{v:selProj.travaux.risk,l:"Risque",c:selProj.travaux.risk>0?"#F97316":"#9CA3AF"},{v:selProj.travaux.blocked,l:"Bloqués",c:selProj.travaux.blocked>0?"#EF4444":"#9CA3AF"}].map((k,i,arr)=>(
-                    <div key={k.l} style={{ textAlign:"center", borderRight:i<arr.length-1?`0.5px solid ${selProj.color}30`:"none" }}>
-                      <div style={{ fontFamily:SF, fontSize:18, fontWeight:700, color:k.c }}>{k.v}</div>
-                      <div style={{ fontFamily:SF, fontSize:10, color:"#9CA3AF", marginTop:2 }}>{k.l}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              {/* Info */}
-              {[{l:"Prochaine étape",v:selProj.nextStep},{l:"Échéance",v:selProj.deadline},{l:"Période",v:selProj.period}].map(r=>(
-                <div key={r.l} style={{ display:"flex", justifyContent:"space-between", padding:"9px 0", borderBottom:"0.5px solid #F9FAFB" }}>
-                  <span style={{ fontFamily:SF, fontSize:12, color:"#9CA3AF" }}>{r.l}</span>
-                  <span style={{ fontFamily:SF, fontSize:12, fontWeight:500, color:"#111827", textAlign:"right", maxWidth:220 }}>{r.v}</span>
-                </div>
-              ))}
-              {/* Description */}
-              <div style={{ marginTop:14, fontFamily:SF, fontSize:13, color:"#6B7280", lineHeight:1.6 }}>{selProj.desc}</div>
-              {/* Travaux récents */}
-              <div style={{ marginTop:16 }}>
-                <div style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em", marginBottom:8 }}>Travaux en cours</div>
-                {selProj.travaux_list.filter(t=>t.status==="running").map(t=>{
-                  const a = Object.values(agents).flat().find(x=>x.id===t.agent)||{name:t.agent,dept:"consulting"};
-                  return (
-                    <div key={t.id} style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 0", borderBottom:"0.5px solid #F9FAFB" }}>
-                      <AgentIcon name={a.name} dept={a.dept} size={26}/>
-                      <div style={{ flex:1, minWidth:0 }}>
-                        <div style={{ fontFamily:SF, fontSize:12, fontWeight:500, color:"#111827" }}>{t.name}</div>
-                        <div style={{ height:3, background:"#F3F4F6", borderRadius:2, marginTop:4, overflow:"hidden" }}>
-                          <div style={{ height:"100%", width:`${t.progress}%`, background:selProj.color, borderRadius:2 }}/>
-                        </div>
-                      </div>
-                      <span style={{ fontFamily:SF, fontSize:12, fontWeight:700, color:selProj.color }}>{t.progress}%</span>
-                    </div>
-                  );
-                })}
-              </div>
-              {/* Activités */}
-              {selProj.activites.length>0 && (
-                <div style={{ marginTop:16 }}>
-                  <div style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em", marginBottom:8 }}>Activités récentes</div>
-                  {selProj.activites.map((a,i)=>{
-                    const icon={ok:"✅",warn:"⚠️",info:"ℹ️",comment:"💬"}[a.type]||"•";
-                    return (
-                      <div key={i} style={{ display:"flex", gap:8, padding:"7px 0", borderBottom:"0.5px solid #F9FAFB" }}>
-                        <span style={{ fontSize:13 }}>{icon}</span>
-                        <div style={{ flex:1 }}>
-                          <div style={{ fontFamily:SF, fontSize:12, fontWeight:500, color:"#111827" }}>{a.msg}</div>
-                          <div style={{ fontFamily:SF, fontSize:11, color:"#9CA3AF" }}>{a.detail}</div>
-                        </div>
-                        <span style={{ fontFamily:SF, fontSize:11, color:"#9CA3AF", flexShrink:0 }}>{a.time}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-              {/* SharePoint folders */}
-              <div style={{ marginTop:16 }}>
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
-                  <div style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em" }}>Dossiers SharePoint</div>
-                  <button onClick={()=>{ const name = window.prompt("Nom ou URL du dossier SharePoint :"); if(name){ setSelProj(p=>({...p, sharepoint_folders:[...(p.sharepoint_folders||[]), { id:"sp"+Date.now(), name, url:name.startsWith("http")?name:"https://iqo.sharepoint.com/sites/"+name }]})); } }}
-                    style={{ background:`${ACCENT}14`, color:ACCENT, border:"none", borderRadius:7, padding:"4px 10px", fontFamily:SF, fontSize:11, fontWeight:600, cursor:"pointer" }}>+ Ajouter</button>
-                </div>
-                {(selProj.sharepoint_folders||[]).length===0 && (
-                  <div style={{ fontFamily:SF, fontSize:12, color:"#9CA3AF", padding:"12px 0", textAlign:"center", background:"#F9FAFB", borderRadius:8 }}>Aucun dossier SharePoint associé</div>
-                )}
-                {(selProj.sharepoint_folders||[]).map(f=>(
-                  <div key={f.id} style={{ display:"flex", alignItems:"center", gap:8, padding:"8px 10px", background:"#F3F4F6", borderRadius:8, marginBottom:6 }}>
-                    <span style={{ fontSize:16 }}>📁</span>
-                    <div style={{ flex:1, minWidth:0 }}>
-                      <div style={{ fontFamily:SF, fontSize:12, fontWeight:500, color:"#111827", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{f.name}</div>
-                      <div style={{ fontFamily:SF, fontSize:10, color:"#9CA3AF", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{f.url}</div>
-                    </div>
-                    <button onClick={()=>setSelProj(p=>({...p, sharepoint_folders:p.sharepoint_folders.filter(x=>x.id!==f.id)}))}
-                      style={{ background:"none", border:"none", cursor:"pointer", color:"#9CA3AF", fontSize:18, lineHeight:1, padding:0, flexShrink:0 }}>×</button>
-                  </div>
-                ))}
-              </div>
+            <div style={{ flex:1, overflowY:"auto" }}>
+              <ProjetDetail
+                projet={selProj}
+                agents={agents}
+                allAgents={Object.values(agents).flat()}
+                onBack={()=>setSelProj(null)}
+                onAgent={onAgent}
+                embedded={true}
+              />
             </div>
           )}
 
@@ -2698,7 +2613,7 @@ function DeskProjets({ agents, onAgent }) {
                       {!isUser && <div style={{ fontFamily:SF, fontSize:10, fontWeight:600, color:d.color, marginBottom:3, marginLeft:32 }}>{m.agentName}</div>}
                       <div style={{ display:"flex", alignItems:"flex-end", gap:7, maxWidth:"88%", flexDirection:isUser?"row-reverse":"row" }}>
                         {!isUser && <div style={{ width:24, height:24, borderRadius:7, background:d.light, display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, flexShrink:0 }}>{agentEmoji(agent?.name||"")}</div>}
-                        {isUser && <div style={{ width:22, height:22, borderRadius:"50%", background:`linear-gradient(135deg,${ACCENT},#7C3AED)`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:SF, fontSize:8, fontWeight:700, color:"#fff", flexShrink:0 }}>RV</div>}
+                        {isUser && <img src={AVATAR_RV} alt="Romain Villar" style={{ width:22, height:22, borderRadius:"50%", objectFit:"cover", flexShrink:0, display:"block" }}/>}
                         <div style={{ background:isUser?ACCENT:"#F3F4F6", color:isUser?"#fff":"#111827", borderRadius:isUser?"12px 12px 3px 12px":"12px 12px 12px 3px", padding:"9px 12px", fontFamily:SF, fontSize:13, lineHeight:1.45 }}>{m.text}</div>
                       </div>
                       <span style={{ fontFamily:SF, fontSize:10, color:"#C7C7CC", marginTop:2, [isUser?"marginRight":"marginLeft"]:30 }}>{m.time}</span>
@@ -3119,23 +3034,37 @@ function DesktopApp({ activeTab, setActiveTab, agents, setAgents, fil, setFil, f
   const [showSearch, setShowSearch] = useState(false);
   const all = Object.values(agents).flat();
 
-  const NAV_ITEMS = [
+  const NAV_CORE = [
     { id:"accueil",  label:"Dashboard", icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-4h4v4h4a1 1 0 001-1v-9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg> },
-    { id:"chat",     label:"Chat",      icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg> },
+    { id:"chat",     label:"Chats",      icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg> },
     { id:"projets",  label:"Projets",   icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="1.8"/><path d="M8 21h8M12 17v4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg> },
+    { id:"fil",      label:"Fil",       icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" strokeWidth="1.8"/><path d="M9 12h6M9 16h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>, badge: filPending },
+  ];
+  const NAV_SECONDARY = [
     { id:"agents",   label:"Agents",    icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="1.8"/><path d="M2 21c0-3.314 3.134-6 7-6s7 2.686 7 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/><path d="M19 8v6M22 11h-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg> },
     { id:"services", label:"Services",  icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><rect x="2" y="7" width="9" height="14" rx="1.5" stroke="currentColor" strokeWidth="1.8"/><rect x="13" y="3" width="9" height="18" rx="1.5" stroke="currentColor" strokeWidth="1.8"/></svg> },
     { id:"sources",  label:"Sources",   icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><ellipse cx="12" cy="5" rx="9" ry="3" stroke="currentColor" strokeWidth="1.8"/><path d="M21 12c0 1.657-4.03 3-9 3s-9-1.343-9-3M3 5v14c0 1.657 4.03 3 9 3s9-1.343 9-3V5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg> },
-    { id:"fil",      label:"Fil",       icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" strokeWidth="1.8"/><path d="M9 12h6M9 16h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>, badge: filPending },
     { id:"admin",    label:"Admin",     icon:<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" strokeWidth="1.8"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" strokeWidth="1.8"/></svg> },
   ];
+
+  const NavItem = ({ nav }) => {
+    const active = activeTab === nav.id;
+    return (
+      <button onClick={()=>setActiveTab(nav.id)} style={{ width:"100%", display:"flex", alignItems:"center", gap:10, padding:sidebarCollapsed?"10px 0":"8px 12px", justifyContent:sidebarCollapsed?"center":"flex-start", background:active?`${ACCENT}10`:"transparent", border:"none", cursor:"pointer", borderRadius:sidebarCollapsed?0:8, margin:sidebarCollapsed?"0":"0 4px", width:sidebarCollapsed?"100%":"calc(100% - 8px)", position:"relative" }}>
+        <span style={{ color:active?ACCENT:"#6B7280", flexShrink:0 }}>{nav.icon}</span>
+        {!sidebarCollapsed && <span style={{ fontFamily:SF, fontSize:13, fontWeight:active?600:400, color:active?ACCENT:"#374151", whiteSpace:"nowrap", flex:1, textAlign:"left" }}>{nav.label}</span>}
+        {nav.badge>0 && <span style={{ background:filUrgent>0?"#EF4444":"#F59E0B", color:"#fff", fontSize:10, fontFamily:SF, fontWeight:700, borderRadius:20, minWidth:18, height:18, display:"flex", alignItems:"center", justifyContent:"center", padding:"0 4px" }}>{nav.badge}</span>}
+        {active && <div style={{ position:"absolute", left:0, top:"20%", bottom:"20%", width:3, background:ACCENT, borderRadius:"0 3px 3px 0" }}/>}
+      </button>
+    );
+  };
 
   const [selAgent, setSelAgent] = useState(null);
 
   return (
     <div style={{ display:"flex", height:"100vh", background:"#F3F4F6", fontFamily:SF, overflow:"hidden" }}>
       {/* Sidebar */}
-      <div style={{ width:sidebarCollapsed?64:200, background:"#fff", borderRight:"0.5px solid #E5E7EB", display:"flex", flexDirection:"column", flexShrink:0, transition:"width 0.2s cubic-bezier(0.4,0,0.2,1)", overflow:"hidden" }}>
+      <div style={{ width:sidebarCollapsed?52:168, background:"#fff", borderRight:"0.5px solid #E5E7EB", display:"flex", flexDirection:"column", flexShrink:0, transition:"width 0.2s cubic-bezier(0.4,0,0.2,1)", overflow:"hidden" }}>
         {/* Logo */}
         <div style={{ height:56, display:"flex", alignItems:"center", padding:"0 14px", borderBottom:"0.5px solid #F3F4F6", flexShrink:0 }}>
           {sidebarCollapsed
@@ -3145,23 +3074,20 @@ function DesktopApp({ activeTab, setActiveTab, agents, setAgents, fil, setFil, f
         </div>
         {/* Nav items */}
         <div style={{ flex:1, overflowY:"auto", padding:"8px 0" }}>
-          {NAV_ITEMS.map(nav=>{
-            const active = activeTab===nav.id;
-            return (
-              <button key={nav.id} onClick={()=>setActiveTab(nav.id)} style={{ width:"100%", display:"flex", alignItems:"center", gap:10, padding:sidebarCollapsed?"10px 0":"9px 14px", justifyContent:sidebarCollapsed?"center":"flex-start", background:active?`${ACCENT}10`:"transparent", border:"none", cursor:"pointer", borderRadius:sidebarCollapsed?0:8, margin:sidebarCollapsed?"0":"0 4px", width:sidebarCollapsed?"100%":"calc(100% - 8px)", position:"relative" }}>
-                <span style={{ color:active?ACCENT:"#6B7280", flexShrink:0 }}>{nav.icon}</span>
-                {!sidebarCollapsed && <span style={{ fontFamily:SF, fontSize:13, fontWeight:active?600:400, color:active?ACCENT:"#374151", whiteSpace:"nowrap" }}>{nav.label}</span>}
-                {nav.badge>0 && (
-                  <span style={{ marginLeft:"auto", background:filUrgent>0?"#EF4444":"#F59E0B", color:"#fff", fontSize:10, fontFamily:SF, fontWeight:700, borderRadius:20, minWidth:18, height:18, display:"flex", alignItems:"center", justifyContent:"center", padding:"0 4px" }}>{nav.badge}</span>
-                )}
-                {active && <div style={{ position:"absolute", left:0, top:"20%", bottom:"20%", width:3, background:ACCENT, borderRadius:"0 3px 3px 0" }}/>}
-              </button>
-            );
-          })}
+          {/* Core */}
+          {!sidebarCollapsed && <div style={{ fontFamily:SF, fontSize:10, fontWeight:700, color:"#C7C7CC", textTransform:"uppercase", letterSpacing:"0.08em", padding:"6px 16px 4px" }}>Espace de travail</div>}
+          {NAV_CORE.map(nav=><NavItem key={nav.id} nav={nav}/>)}
+
+          {/* Divider */}
+          <div style={{ margin:"10px 12px", height:"0.5px", background:"#F3F4F6" }}/>
+
+          {/* Secondary */}
+          {!sidebarCollapsed && <div style={{ fontFamily:SF, fontSize:10, fontWeight:700, color:"#C7C7CC", textTransform:"uppercase", letterSpacing:"0.08em", padding:"2px 16px 4px" }}>Configuration</div>}
+          {NAV_SECONDARY.map(nav=><NavItem key={nav.id} nav={nav}/>)}
         </div>
         {/* User profile */}
         <div style={{ borderTop:"0.5px solid #F3F4F6", padding:"12px", display:"flex", alignItems:"center", gap:10, cursor:"pointer" }}>
-          <div style={{ width:32, height:32, borderRadius:"50%", background:`linear-gradient(135deg,${ACCENT},#7C3AED)`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:SF, fontSize:11, fontWeight:700, color:"#fff", flexShrink:0 }}>RV</div>
+          <img src={AVATAR_RV} alt="Romain Villar" style={{ width:32, height:32, borderRadius:"50%", objectFit:"cover", flexShrink:0, display:"block" }}/>
           {!sidebarCollapsed && (
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ fontFamily:SF, fontSize:12, fontWeight:600, color:"#111827", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>Romain Villar</div>
@@ -3191,7 +3117,7 @@ function DesktopApp({ activeTab, setActiveTab, agents, setAgents, fil, setFil, f
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" stroke="#6B7280" strokeWidth="1.8" strokeLinecap="round"/></svg>
               {filPending>0 && <span style={{ position:"absolute", top:5, right:5, width:7, height:7, borderRadius:"50%", background:"#EF4444", border:"1.5px solid #fff" }}/>}
             </button>
-            <div style={{ width:32, height:32, borderRadius:"50%", background:`linear-gradient(135deg,${ACCENT},#7C3AED)`, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:SF, fontSize:11, fontWeight:700, color:"#fff", cursor:"pointer" }}>RV</div>
+            <img src={AVATAR_RV} alt="Romain Villar" style={{ width:32, height:32, borderRadius:"50%", objectFit:"cover", cursor:"pointer", display:"block" }}/>
           </div>
         </div>
 
@@ -3448,7 +3374,7 @@ function ChatScreen({ agents }) {
                 {/* Avatar */}
                 <div style={{ width:34, height:34, borderRadius:isUser?"50%":10, background:isUser?`linear-gradient(135deg,${ACCENT},#7C3AED)`:`${ACCENT}14`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
                   {isUser
-                    ? <span style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#fff" }}>RV</span>
+                    ? <img src={AVATAR_RV} alt="Romain Villar" style={{ width:32, height:32, borderRadius:"50%", objectFit:"cover", flexShrink:0, display:"block" }}/>
                     : <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke={ACCENT} strokeWidth="1.8" strokeLinecap="round"/></svg>
                   }
                 </div>
@@ -3673,7 +3599,7 @@ export default function App() {
   // Mobile — iPhone 15 Pro shell
   const NAV = [
     { id:"accueil",  label:"Dashboard", svg:<svg viewBox="0 0 24 24" fill="none" width="22" height="22"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-4h4v4h4a1 1 0 001-1v-9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg> },
-    { id:"chat",     label:"Chat",      svg:<svg viewBox="0 0 24 24" fill="none" width="22" height="22"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg> },
+    { id:"chat",     label:"Chats",      svg:<svg viewBox="0 0 24 24" fill="none" width="22" height="22"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg> },
     { id:"fil",      label:"Fil",       svg:<svg viewBox="0 0 24 24" fill="none" width="22" height="22"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" strokeWidth="1.8"/><path d="M9 12h6M9 16h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg> },
     { id:"projets",  label:"Projets",   svg:<svg viewBox="0 0 24 24" fill="none" width="22" height="22"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="1.8"/><path d="M8 21h8M12 17v4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg> },
     { id:"admin",    label:"Admin",     svg:<svg viewBox="0 0 24 24" fill="none" width="22" height="22"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" strokeWidth="1.8"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" strokeWidth="1.8"/></svg> },
