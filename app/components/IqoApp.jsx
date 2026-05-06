@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useRef } from "react";
 
 const SF = "-apple-system,'SF Pro Display','SF Pro Text',BlinkMacSystemFont,'Segoe UI',sans-serif";
@@ -3128,4 +3130,3 @@ export default function App() {
     </div>
   );
 }
-
