@@ -8,20 +8,14 @@ const IQO_GREEN = "#6DBE45";
 const AVATAR_RV = "data:image/png;base64,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";
 
 // ─── IqoLogo ──────────────────────────────────────────────────────────────────
-// Utilise le PNG original dans un container arrondi fond #111827
-// variant: "full" | "icon"   size: taille de l'icône en px
+// logo.png est maintenant transparent — s'affiche sur n'importe quel fond
 function IqoLogo({ variant = "full", size = 32, onDark = false }) {
   const Badge = () => (
-    <div style={{ width:size, height:size, borderRadius:Math.round(size*0.28),
-                  background:"#111827", display:"flex", alignItems:"center",
-                  justifyContent:"center", flexShrink:0, overflow:"hidden" }}>
-      <img src="/logo.png" alt="iQo" width={size*0.85} height={size*0.85}
-           style={{ display:"block", objectFit:"contain" }}/>
-    </div>
+    <img src="/logo.png" alt="iQo"
+         width={size} height={size}
+         style={{ display:"block", objectFit:"contain", flexShrink:0 }}/>
   );
-
   if (variant === "icon") return <Badge />;
-
   return (
     <div style={{ display:"flex", alignItems:"center", gap:10 }}>
       <Badge />
@@ -38,15 +32,9 @@ function IqoLogo({ variant = "full", size = 32, onDark = false }) {
   );
 }
 
-const AVATAR_MAP = {
-  "Marketing Agent":"📣","Market Intelligence Agent":"📡","Content Agent":"✍️","Campaign Monitor":"📡",
-  "RH Agent":"👥","Recruitment Agent":"🎯","HR Reporter":"📈",
-  "Consulting Assistant":"🧠","Intel Watcher":"👁","Proposal Writer":"📝","Meeting Prep":"🤝",
-  "IT Monitor":"🖥","Security Scanner":"🔒",
-  "Finance Agent":"💰","Invoice Agent":"🧾","Budget Tracker":"📊",
-  "Contract Reviewer":"⚖️",
-};
-const agentEmoji = n => AVATAR_MAP[n] || "🤖";
+const LABEL_SM = { ...LABEL_SM };
+const projBadge = p => p.travaux.blocked>0 ? {l:"Bloqué",c:"#EF4444",bg:"#FEF2F2"} : p.travaux.late>2 ? {l:"En retard",c:"#F59E0B",bg:"#FEF3C7"} : p.travaux.risk>3 ? {l:"À risque",c:"#F97316",bg:"#FFF7ED"} : {l:"Sain",c:"#10B981",bg:"#DCFCE7"};
+const agentEmoji = n => ({"Marketing Agent":"📣","Market Intelligence Agent":"📡","Content Agent":"✍️","Campaign Monitor":"📡","RH Agent":"👥","Recruitment Agent":"🎯","HR Reporter":"📈","Consulting Assistant":"🧠","Intel Watcher":"👁","Proposal Writer":"📝","Meeting Prep":"🤝","IT Monitor":"🖥","Security Scanner":"🔒","Finance Agent":"💰","Invoice Agent":"🧾","Budget Tracker":"📊","Contract Reviewer":"⚖️"})[n] || "🤖";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 
@@ -77,8 +65,6 @@ const ALL_SOURCES = [
   { id:"f5", name:"iQo Finance",          icon:"📊", status:"warn", type:"Interne",    scope:"project", desc:"Pilotage financier et budgets iQo"   },
   { id:"f6", name:"iQo Recrutement",      icon:"👥", status:"ok",   type:"Interne",    scope:"project", desc:"Gestion des candidatures et RH iQo" },
 ];
-
-const EXT_COLOR = { pptx:"#F97316", docx:"#0EA5E9", xlsx:"#10B981", html:"#7C3AED", md:"#6B7280", pdf:"#EF4444" };
 
 const STATUS_CFG = {
   running:{ label:"En cours",   color:"#10B981", bg:"#DCFCE7", dot:"#10B981", pulse:true  },
@@ -137,15 +123,6 @@ const INIT_FIL = [
   { id:"f8", type:"info",   agent:"IT Monitor",         dept:"it",        msg:"Information",                  detail:"Pic de charge détecté sur le serveur Make : CPU 87% pendant 12 minutes. Surveillance active. Aucune action requise pour l'instant.", deadline:null,         time:"Il y a 3 h", file:null,                          mission:"iQo Interne", owner:"thomas",  triggeredBy:"Automatique",context:"Infrastructure" },
 ];
 
-const HISTORY_LOG = [
-  { time:"Auj. 09:30", action:"Vous avez validé",     item:"Plan de formation 2025",       agent:"RH Agent",                  type:"action"  },
-  { time:"Auj. 08:45", action:"Vous avez répondu",    item:"Question sur budget Cloud",    agent:"Finance Agent",             type:"reply"   },
-  { time:"Hier 18:20", action:"Vous avez commenté",   item:"Rapport tendances 2025",       agent:"Market Intelligence Agent", type:"comment" },
-  { time:"Hier 16:10", action:"Vous avez lancé",      item:"Veille concurrentielle",       agent:"Intel Watcher",             type:"launch"  },
-  { time:"15 jan.",    action:"Vous avez validé",      item:"Onboarding collaborateur",     agent:"RH Agent",                  type:"action"  },
-  { time:"15 jan.",    action:"Vous avez commenté",    item:"Budget prévisionnel 2025",     agent:"Finance Agent",             type:"comment" },
-];
-
 // ─── ATOMS ────────────────────────────────────────────────────────────────────
 
 function Pulse({ color, size=8 }) {
@@ -190,7 +167,7 @@ function AgentIcon({ name, dept, size=36 }) {
 
 function ExtBadge({ filename }) {
   const ext = (filename||"").split(".").pop().toLowerCase();
-  const c = EXT_COLOR[ext] || "#6B7280";
+  const c = {"pptx":"#F97316","docx":"#0EA5E9","xlsx":"#10B981","html":"#7C3AED","md":"#6B7280","pdf":"#EF4444"}[ext] || "#6B7280";
   return <span style={{ fontSize:9, fontFamily:SF, fontWeight:700, color:c, background:c+"18", borderRadius:4, padding:"2px 5px", textTransform:"uppercase", flexShrink:0 }}>{ext}</span>;
 }
 
@@ -206,15 +183,6 @@ function Divider({ indent=0 }) {
 
 function Card({ children, style={}, onClick }) {
   return <div onClick={onClick} style={{ background:"#fff", borderRadius:14, overflow:"hidden", boxShadow:"0 1px 3px rgba(0,0,0,0.06)", ...style }}>{children}</div>;
-}
-
-function SectionHeader({ title, action, onAction }) {
-  return (
-    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
-      <span style={{ fontFamily:SF, fontSize:16, fontWeight:700, color:"#111827", letterSpacing:"-0.02em" }}>{title}</span>
-      {action && <button onClick={onAction} style={{ background:"none", border:"none", cursor:"pointer", fontFamily:SF, fontSize:13, color:ACCENT, fontWeight:600, padding:0 }}>{action}</button>}
-    </div>
-  );
 }
 
 function SearchBar({ value, onChange, placeholder="Rechercher…" }) {
@@ -252,18 +220,6 @@ function SecBtn({ children, onPress, color=ACCENT, full=true }) {
 }
 
 // ─── SPARKLINE ────────────────────────────────────────────────────────────────
-
-function Sparkline({ data, color, w=80, h=28 }) {
-  if(!data||data.length<2) return null;
-  const min=Math.min(...data), max=Math.max(...data), range=max-min||1;
-  const pts = data.map((v,i)=>[i/(data.length-1)*(w-2)+1, h-1-((v-min)/range)*(h-4)-1]);
-  const d = pts.map((p,i)=>(i===0?"M":"L")+p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
-  return (
-    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} fill="none">
-      <path d={d} stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  );
-}
 
 // ─── DONUT ────────────────────────────────────────────────────────────────────
 
@@ -778,8 +734,6 @@ function AccueilScreen({ agents, fil, onAgent, onFil, setActiveTab }) {
 
   return (
     <div style={{ flex:1, overflowY:"auto", padding:"0 0 20px" }}>
-
-      {/* ── Header avec avatar ── */}
       <div style={{ padding:"14px 16px 12px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
         <div style={{ display:"flex", alignItems:"center", gap:10 }}>
           {/* Avatar */}
@@ -798,8 +752,6 @@ function AccueilScreen({ agents, fil, onAgent, onFil, setActiveTab }) {
       </div>
 
       <div style={{ padding:"0 16px" }}>
-
-        {/* ── Recommandation du jour ── */}
         <div style={{ background:"linear-gradient(135deg,#4F46E5 0%,#7C3AED 60%,#6366F1 100%)", borderRadius:18, padding:"16px", marginBottom:16, position:"relative", overflow:"hidden" }}>
           {/* Logo watermark top-right */}
           <div style={{ position:"absolute", top:12, right:14, opacity:0.25 }}>
@@ -813,8 +765,6 @@ function AccueilScreen({ agents, fil, onAgent, onFil, setActiveTab }) {
             Voir le détail →
           </button>
         </div>
-
-        {/* ── À traiter ── */}
         <div style={{ marginBottom:16 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
             <span style={{ fontFamily:SF, fontSize:16, fontWeight:700, color:"#111827", letterSpacing:"-0.02em" }}>À traiter</span>
@@ -836,8 +786,6 @@ function AccueilScreen({ agents, fil, onAgent, onFil, setActiveTab }) {
             ))}
           </div>
         </div>
-
-        {/* ── Avancement global ── */}
         <div style={{ marginBottom:16 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
             <span style={{ fontFamily:SF, fontSize:16, fontWeight:700, color:"#111827", letterSpacing:"-0.02em" }}>Avancement global</span>
@@ -883,8 +831,6 @@ function AccueilScreen({ agents, fil, onAgent, onFil, setActiveTab }) {
             </div>
           </div>
         </div>
-
-        {/* ── Projets à surveiller ── */}
         {projetsAlerte.length > 0 && (
           <div style={{ marginBottom:16 }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
@@ -921,8 +867,6 @@ function AccueilScreen({ agents, fil, onAgent, onFil, setActiveTab }) {
             </Card>
           </div>
         )}
-
-        {/* ── Actions suggérées ── */}
         <div style={{ marginBottom:16 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
             <div>
@@ -948,8 +892,6 @@ function AccueilScreen({ agents, fil, onAgent, onFil, setActiveTab }) {
             })}
           </Card>
         </div>
-
-        {/* ── Activité récente ── */}
         <div style={{ marginBottom:4 }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
             <span style={{ fontFamily:SF, fontSize:16, fontWeight:700, color:"#111827", letterSpacing:"-0.02em" }}>Activité récente</span>
@@ -1055,88 +997,6 @@ function AgentsScreen({ agents, setAgents, onAgent }) {
 
 // ─── SERVICES SCREEN ─────────────────────────────────────────────────────────
 
-function ServicesScreen({ agents, onAgent, onDept }) {
-  const [search, setSearch] = useState("");
-  const depts = DEPTS.filter(d=>!search||d.label.toLowerCase().includes(search.toLowerCase()));
-
-  return (
-    <div style={{ flex:1, display:"flex", flexDirection:"column", minHeight:0 }}>
-      <div style={{ padding:"16px 16px 0", flexShrink:0 }}>
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:14 }}>
-          <div>
-            <div style={{ fontFamily:SF, fontSize:22, fontWeight:700, color:"#111827", letterSpacing:"-0.02em" }}>Services</div>
-            <div style={{ fontFamily:SF, fontSize:13, color:"#9CA3AF" }}>Vue d'ensemble par service</div>
-          </div>
-          <button style={{ width:34, height:34, borderRadius:10, background:"#F3F4F6", border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16 }}>+</button>
-        </div>
-        <div style={{ marginBottom:12 }}><SearchBar value={search} onChange={setSearch} placeholder="Rechercher un service…" /></div>
-      </div>
-
-      <div style={{ flex:1, overflowY:"auto", padding:"4px 16px 100px" }}>
-        {depts.map(d=>{
-          const list=agents[d.id]||[];
-          const run=list.filter(a=>a.status==="running").length;
-          const wait=list.filter(a=>a.status==="waiting").length;
-          const err=list.filter(a=>a.status==="error").length;
-          const pct=list.length>0?Math.round(list.filter(a=>a.active).length/list.length*100):0;
-          const health=err>0?"Attention":wait>=2?"À surveiller":"Sain";
-          const hc=err>0?"#EF4444":wait>=2?"#F59E0B":"#10B981";
-          const spark=[30,45,38,52,48,60,65,58,pct,pct-5,pct+3,pct];
-
-          return (
-            <Card key={d.id} onClick={()=>onDept(d.id)} style={{ padding:"16px", marginBottom:12, cursor:"pointer" }}>
-              <div style={{ display:"flex", alignItems:"flex-start", gap:12, marginBottom:14 }}>
-                <div style={{ width:44, height:44, borderRadius:13, background:d.light, display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, flexShrink:0 }}>{d.emoji}</div>
-                <div style={{ flex:1, minWidth:0 }}>
-                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
-                    <div>
-                      <div style={{ fontFamily:SF, fontSize:16, fontWeight:700, color:"#111827" }}>{d.label}</div>
-                      <div style={{ fontFamily:SF, fontSize:12, color:"#9CA3AF", marginTop:1 }}>{list.length} agents</div>
-                    </div>
-                    <span style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:hc, background:hc+"14", borderRadius:8, padding:"3px 9px" }}>{health}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:14 }}>
-                <div style={{ flex:1 }}>
-                  <div style={{ display:"flex", gap:16, marginBottom:6 }}>
-                    {[{v:run,l:"En cours",c:"#10B981"},{v:wait,l:"En attente",c:"#F59E0B"},{v:err,l:"En erreur",c:"#EF4444"}].map(k=>(
-                      <div key={k.l}>
-                        <div style={{ fontFamily:SF, fontSize:20, fontWeight:700, color:k.c, letterSpacing:"-0.03em" }}>{k.v}</div>
-                        <div style={{ fontFamily:SF, fontSize:10, color:"#9CA3AF" }}>{k.l}</div>
-                      </div>
-                    ))}
-                  </div>
-                  <div style={{ height:4, background:"#F3F4F6", borderRadius:2, overflow:"hidden" }}>
-                    <div style={{ display:"flex", height:"100%" }}>
-                      <div style={{ width:`${run/list.length*100}%`, background:"#10B981", transition:"width 0.5s" }} />
-                      <div style={{ width:`${wait/list.length*100}%`, background:"#F59E0B", transition:"width 0.5s" }} />
-                      <div style={{ width:`${err/list.length*100}%`, background:"#EF4444", transition:"width 0.5s" }} />
-                    </div>
-                  </div>
-                </div>
-                <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:2 }}>
-                  <Donut pct={pct} size={48} />
-                  <span style={{ fontFamily:SF, fontSize:9, color:"#9CA3AF" }}>Santé</span>
-                </div>
-              </div>
-
-              {/* Sparkline */}
-              <div style={{ borderTop:"0.5px solid #F9FAFB", paddingTop:10 }}>
-                <Sparkline data={spark} color={d.color} w={340} h={28} />
-              </div>
-            </Card>
-          );
-        })}
-        <button style={{ width:"100%", padding:"13px", borderRadius:12, border:"1.5px dashed #D1D5DB", background:"transparent", color:ACCENT, fontFamily:SF, fontSize:14, fontWeight:600, cursor:"pointer" }}>
-          + Ajouter un service
-        </button>
-      </div>
-    </div>
-  );
-}
-
 // ─── FIL SCREEN ───────────────────────────────────────────────────────────────
 
 function FilScreen({ fil, setFil, onAction }) {
@@ -1208,11 +1068,11 @@ function FilScreen({ fil, setFil, onAction }) {
                             <div style={{ fontFamily:SF, fontSize:14, fontWeight:600, color:"#111827", marginBottom:3, lineHeight:1.35 }}>
                               {item.context} — {item.msg}
                             </div>
-                            {/* Secondary: who produced it + service */}
+                            {/* Secondary: who produced it + project */}
                             <div style={{ display:"flex", alignItems:"center", gap:5, marginBottom:5 }}>
                               <AgentIcon name={item.agent} dept={item.dept} size={16} />
                               <span style={{ fontFamily:SF, fontSize:12, color:"#9CA3AF" }}>{item.agent}</span>
-                              <DeptTag dept={item.dept} />
+                              <span style={{ fontFamily:SF, fontSize:11, fontWeight:600, color:ACCENT, background:`${ACCENT}10`, borderRadius:6, padding:"1px 7px" }}>{item.mission}</span>
                             </div>
                             {/* Detail */}
                             <div style={{ fontFamily:SF, fontSize:13, color:"#6B7280", lineHeight:1.4, marginBottom:6 }}>{item.detail.slice(0,90)}…</div>
@@ -1292,8 +1152,6 @@ function AdminScreen({ agents, setAgents, onToggleView }) {
             </button>
           )}
         </div>
-
-        {/* ── Gestion de l'application ── */}
         <div style={{ marginBottom:24 }}>
           <div style={{ fontFamily:SF, fontSize:13, fontWeight:600, color:"#6B7280", letterSpacing:"0.01em", marginBottom:8, paddingLeft:4 }}>Gestion de l'application</div>
           <Card>
@@ -1327,8 +1185,6 @@ function AdminScreen({ agents, setAgents, onToggleView }) {
             ))}
           </Card>
         </div>
-
-        {/* ── Informations ── */}
         <div style={{ marginBottom:16 }}>
           <div style={{ fontFamily:SF, fontSize:13, fontWeight:600, color:"#6B7280", marginBottom:8, paddingLeft:4 }}>Informations</div>
           <Card>
@@ -1701,7 +1557,7 @@ function ProjetsScreen({ agents, onAgent }) {
                               {m.text}
                             </div>
                           </div>
-                          <span style={{ fontFamily:SF, fontSize:9, color:"#C7C7CC", marginTop:2, [isUser?"marginRight":"marginLeft"]:28 }}>{m.time}</span>
+                          <span style={{ fontFamily:SF, fontSize:9, color:"#C7C7CC", marginTop:2, ...(isUser ? {marginRight:28} : {marginLeft:28}) }}>{m.time}</span>
                         </div>
                       );
                     })}
@@ -1750,7 +1606,6 @@ function ProjetsScreen({ agents, onAgent }) {
 function ProjetDetail({ projet: p, agents, allAgents, onBack, onAgent, embedded=false }) {
   const [tab,         setTab]         = useState("overview");
   const [showAffect,  setShowAffect]  = useState(false);
-  const [showChat,    setShowChat]    = useState(false);
   const [affectSearch,setAffectSearch]= useState("");
   const [affectFilter,setAffectFilter]= useState("all");
   const [travFilter,  setTravFilter]  = useState("all");
@@ -1791,10 +1646,12 @@ function ProjetDetail({ projet: p, agents, allAgents, onBack, onAgent, embedded=
   };
 
   const TABS = [
-    { id:"overview", label:"Vue d'ensemble" },
-    { id:"agents",   label:"Agents"         },
-    { id:"sources",  label:"Sources"        },
-    { id:"travaux",  label:"Travaux"        },
+    { id:"overview",  label:"Vue d'ensemble" },
+    { id:"chat",      label:"Chat équipe",    badge: unreadCount },
+    { id:"livrables", label:"Livrables"       },
+    { id:"travaux",   label:"Travaux"         },
+    { id:"agents",    label:"Agents"          },
+    { id:"sources",   label:"Sources"         },
   ];
 
   const travGroups = [
@@ -1818,24 +1675,21 @@ function ProjetDetail({ projet: p, agents, allAgents, onBack, onAgent, embedded=
             </div>
             <div style={{ display:"flex", alignItems:"center", gap:8 }}>
               <span style={{ fontFamily:SF, fontSize:11, fontWeight:600, color:"#10B981", background:"#DCFCE7", borderRadius:8, padding:"2px 8px" }}>En cours</span>
-              <button onClick={()=>setShowChat(true)} style={{ position:"relative", width:32, height:32, borderRadius:9, background:`${ACCENT}12`, border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke={ACCENT} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                {unreadCount>0 && <span style={{ position:"absolute", top:2, right:2, width:8, height:8, borderRadius:"50%", background:"#EF4444", border:"1.5px solid #fff" }} />}
-              </button>
             </div>
           </div>
         )}
         {/* Tabs */}
         <div style={{ display:"flex", overflowX:"auto", padding:`${embedded?"8px":"0"} 12px 0` }}>
           {TABS.map(t=>(
-            <button key={t.id} onClick={()=>setTab(t.id)} style={{ fontFamily:SF, fontSize:12, fontWeight:tab===t.id?600:400, color:tab===t.id?ACCENT:"#6B7280", background:"none", border:"none", cursor:"pointer", padding:"10px 8px", borderBottom:tab===t.id?`2px solid ${ACCENT}`:"2px solid transparent", whiteSpace:"nowrap", flexShrink:0, transition:"all 0.15s" }}>{t.label}</button>
+            <button key={t.id} onClick={()=>setTab(t.id)} style={{ fontFamily:SF, fontSize:12, fontWeight:tab===t.id?600:400, color:tab===t.id?ACCENT:"#6B7280", background:"none", border:"none", cursor:"pointer", padding:"10px 8px", borderBottom:tab===t.id?`2px solid ${ACCENT}`:"2px solid transparent", whiteSpace:"nowrap", flexShrink:0, transition:"all 0.15s", display:"flex", alignItems:"center", gap:5 }}>
+              {t.label}
+              {t.badge>0 && <span style={{ background:"#EF4444", color:"#fff", fontSize:9, fontWeight:700, borderRadius:20, minWidth:16, height:16, display:"flex", alignItems:"center", justifyContent:"center", padding:"0 4px" }}>{t.badge}</span>}
+            </button>
           ))}
         </div>
       </div>
 
       <div style={{ flex:1, overflowY:"auto", padding:"14px 16px 20px" }}>
-
-        {/* ── VUE D'ENSEMBLE ── */}
         {tab==="overview" && (
           <>
             {/* Donut + résumé */}
@@ -1921,8 +1775,6 @@ function ProjetDetail({ projet: p, agents, allAgents, onBack, onAgent, embedded=
             )}
           </>
         )}
-
-        {/* ── AGENTS ── */}
         {tab==="agents" && (
           <>
             {/* Stats */}
@@ -1991,8 +1843,6 @@ function ProjetDetail({ projet: p, agents, allAgents, onBack, onAgent, embedded=
             </button>
           </>
         )}
-
-        {/* ── SOURCES ── */}
         {tab==="sources" && (
           <>
             {/* Sources projet actives */}
@@ -2065,8 +1915,6 @@ function ProjetDetail({ projet: p, agents, allAgents, onBack, onAgent, embedded=
             )}
           </>
         )}
-
-        {/* ── TRAVAUX ── */}
         {tab==="travaux" && (
           <>
             {/* Filter chips */}
@@ -2087,7 +1935,7 @@ function ProjetDetail({ projet: p, agents, allAgents, onBack, onAgent, embedded=
               if(!g.items.length) return null;
               return (
                 <div key={g.key} style={{ marginBottom:14 }}>
-                  {travFilter==="all" && <div style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em", marginBottom:7 }}>{g.label} ({g.items.length})</div>}
+                  {travFilter==="all" && <div style={{ ...LABEL_SM, marginBottom:7 }}>{g.label} ({g.items.length})</div>}
                   <Card>
                     {g.items.map((t,i)=>{
                       const sc = STATUS_CFG[t.status]||STATUS_CFG.idle;
@@ -2141,123 +1989,108 @@ function ProjetDetail({ projet: p, agents, allAgents, onBack, onAgent, embedded=
             </Card>
           </>
         )}
-      </div>
-
-      {/* ── CHAT ÉQUIPE PROJET ── */}
-      {showChat && (
-        <div style={{ position:"absolute", inset:0, zIndex:70, display:"flex", flexDirection:"column", background:"#F9FAFB" }}>
-          {/* Chat header */}
-          <div style={{ background:"#fff", borderBottom:"0.5px solid #E5E7EB", padding:"14px 16px", flexShrink:0 }}>
-            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:10 }}>
-              <button onClick={()=>setShowChat(false)} style={{ display:"flex", alignItems:"center", gap:5, background:"none", border:"none", cursor:"pointer", color:ACCENT, fontFamily:SF, fontSize:14, padding:0 }}>
-                <svg width="9" height="15" viewBox="0 0 9 15" fill="none"><path d="M7.5 1L1 7.5l6.5 6.5" stroke={ACCENT} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                Retour
-              </button>
-              <div style={{ textAlign:"center" }}>
-                <div style={{ fontFamily:SF, fontSize:15, fontWeight:600, color:"#111827" }}>Équipe projet</div>
-                <div style={{ fontFamily:SF, fontSize:11, color:"#9CA3AF" }}>{pAgents.length} agents · {p.name}</div>
-              </div>
-              <div style={{ width:52 }} />
+        {tab==="chat" && (
+          <div style={{ display:"flex", flexDirection:"column", height:"100%", margin:"-14px -16px -20px" }}>
+            {/* Agent pills */}
+            <div style={{ padding:"10px 14px 8px", borderBottom:"0.5px solid #F3F4F6", display:"flex", gap:6, overflowX:"auto", flexShrink:0, background:"#fff" }}>
+              <button onClick={()=>setChatTarget("all")} style={{ fontFamily:SF, fontSize:11, fontWeight:chatTarget==="all"?700:500, color:chatTarget==="all"?"#fff":"#6B7280", background:chatTarget==="all"?ACCENT:"#F3F4F6", borderRadius:20, padding:"4px 12px", border:"none", cursor:"pointer", whiteSpace:"nowrap", flexShrink:0 }}>Tous</button>
+              {pAgents.map(a=>{ const d=DEPTS.find(x=>x.id===a.dept)||DEPTS[0]; const active=chatTarget===a.id; return (
+                <button key={a.id} onClick={()=>setChatTarget(a.id)} style={{ display:"flex", alignItems:"center", gap:5, fontFamily:SF, fontSize:11, fontWeight:active?700:500, color:active?"#fff":d.color, background:active?d.color:`${d.color}14`, borderRadius:20, padding:"4px 10px", border:"none", cursor:"pointer", whiteSpace:"nowrap", flexShrink:0 }}>
+                  {agentEmoji(a.name)} {a.name.split(" ")[0]}
+                </button>
+              ); })}
             </div>
-            {/* Agent selector pills */}
-            <div style={{ display:"flex", gap:6, overflowX:"auto" }}>
-              <button onClick={()=>setChatTarget("all")} style={{ fontFamily:SF, fontSize:11, fontWeight:chatTarget==="all"?700:500, color:chatTarget==="all"?"#fff":"#6B7280", background:chatTarget==="all"?ACCENT:"#F3F4F6", borderRadius:20, padding:"4px 12px", border:"none", cursor:"pointer", whiteSpace:"nowrap", flexShrink:0 }}>
-                Tous
-              </button>
-              {pAgents.map(a=>{
-                const d = DEPTS.find(x=>x.id===a.dept)||DEPTS[0];
-                const active = chatTarget===a.id;
-                return (
-                  <button key={a.id} onClick={()=>setChatTarget(a.id)} style={{ display:"flex", alignItems:"center", gap:5, fontFamily:SF, fontSize:11, fontWeight:active?700:500, color:active?"#fff":d.color, background:active?d.color:`${d.color}14`, borderRadius:20, padding:"4px 10px", border:"none", cursor:"pointer", whiteSpace:"nowrap", flexShrink:0 }}>
-                    <span style={{ fontSize:12 }}>{agentEmoji(a.name)}</span>
-                    {a.name.split(" ")[0]}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Messages */}
-          <div style={{ flex:1, overflowY:"auto", padding:"12px 14px", display:"flex", flexDirection:"column", gap:10 }}>
-            {chatMessages
-              .filter(m=>chatTarget==="all"||m.from==="user"||(m.from==="agent"&&m.agentId===chatTarget))
-              .map(m=>{
-                const isUser = m.from==="user";
-                const agent  = pAgents.find(a=>a.id===m.agentId);
-                const d      = agent ? DEPTS.find(x=>x.id===agent.dept)||DEPTS[0] : DEPTS[0];
+            {/* Messages */}
+            <div style={{ flex:1, overflowY:"auto", padding:"12px 14px", display:"flex", flexDirection:"column", gap:10 }}>
+              {chatMessages.filter(m=>chatTarget==="all"||m.from==="user"||(m.from==="agent"&&m.agentId===chatTarget)).map(m=>{
+                const isUser=m.from==="user"; const agent=pAgents.find(a=>a.id===m.agentId); const d=agent?DEPTS.find(x=>x.id===agent.dept)||DEPTS[0]:DEPTS[0];
                 return (
                   <div key={m.id} style={{ display:"flex", flexDirection:"column", alignItems:isUser?"flex-end":"flex-start" }}>
-                    {/* Agent label */}
-                    {!isUser && (
-                      <div style={{ display:"flex", alignItems:"center", gap:5, marginBottom:4, marginLeft:38 }}>
-                        <span style={{ fontFamily:SF, fontSize:11, fontWeight:600, color:d.color }}>{m.agentName}</span>
-                        <span style={{ fontFamily:SF, fontSize:10, color:"#9CA3AF" }}>{m.time}</span>
-                      </div>
-                    )}
+                    {!isUser && <div style={{ display:"flex", alignItems:"center", gap:5, marginBottom:4, marginLeft:38 }}><span style={{ fontFamily:SF, fontSize:11, fontWeight:600, color:d.color }}>{m.agentName}</span><span style={{ fontFamily:SF, fontSize:10, color:"#9CA3AF" }}>{m.time}</span></div>}
                     <div style={{ display:"flex", alignItems:"flex-end", gap:8, maxWidth:"85%", flexDirection:isUser?"row-reverse":"row" }}>
-                      {/* Avatar */}
-                      {!isUser && agent && (
-                        <div style={{ width:30, height:30, borderRadius:9, background:d.light, display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, flexShrink:0 }}>
-                          {agentEmoji(agent.name)}
-                        </div>
-                      )}
-                      {isUser && (
-                        <img src={AVATAR_RV} alt="Romain Villar" style={{ width:26, height:26, borderRadius:"50%", objectFit:"cover", flexShrink:0, display:"block" }}/>
-                      )}
-                      {/* Bubble */}
-                      <div style={{
-                        background: isUser ? ACCENT : "#fff",
-                        color: isUser ? "#fff" : "#111827",
-                        borderRadius: isUser ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
-                        padding:"10px 13px",
-                        fontFamily:SF, fontSize:13, lineHeight:1.5,
-                        boxShadow: isUser ? "none" : "0 1px 3px rgba(0,0,0,0.06)",
-                        border: isUser ? "none" : "0.5px solid #E5E7EB",
-                      }}>
-                        {m.text}
-                      </div>
+                      {!isUser&&agent && <div style={{ width:30, height:30, borderRadius:9, background:d.light, display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, flexShrink:0 }}>{agentEmoji(agent.name)}</div>}
+                      {isUser && <img src={AVATAR_RV} alt="RV" style={{ width:26, height:26, borderRadius:"50%", objectFit:"cover", flexShrink:0 }}/>}
+                      <div style={{ background:isUser?ACCENT:"#fff", color:isUser?"#fff":"#111827", borderRadius:isUser?"16px 16px 4px 16px":"16px 16px 16px 4px", padding:"10px 13px", fontFamily:SF, fontSize:13, lineHeight:1.5, boxShadow:isUser?"none":"0 1px 3px rgba(0,0,0,0.06)", border:isUser?"none":"0.5px solid #E5E7EB" }}>{m.text}</div>
                     </div>
                     {isUser && <span style={{ fontFamily:SF, fontSize:10, color:"#9CA3AF", marginTop:3, marginRight:34 }}>{m.time}</span>}
                   </div>
                 );
-              })
-            }
-          </div>
-
-          {/* Suggestions rapides */}
-          <div style={{ padding:"0 14px 8px", display:"flex", gap:6, overflowX:"auto", flexShrink:0 }}>
-            {[
-              "Quel est l'état d'avancement ?",
-              "Y a-t-il des blocages ?",
-              "Prépare un point de situation",
-            ].map(s=>(
-              <button key={s} onClick={()=>setChatInput(s)} style={{ fontFamily:SF, fontSize:11, color:ACCENT, background:`${ACCENT}10`, border:`1px solid ${ACCENT}25`, borderRadius:20, padding:"5px 11px", cursor:"pointer", whiteSpace:"nowrap", flexShrink:0 }}>
-                {s}
-              </button>
-            ))}
-          </div>
-
-          {/* Input bar */}
-          <div style={{ padding:"8px 14px 20px", background:"#fff", borderTop:"0.5px solid #E5E7EB", display:"flex", alignItems:"flex-end", gap:8, flexShrink:0 }}>
-            {/* Attachment */}
-            <button style={{ width:34, height:34, borderRadius:10, background:"#F3F4F6", border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" stroke="#6B7280" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            </button>
-            <div style={{ flex:1, background:"#F3F4F6", borderRadius:20, padding:"8px 14px", display:"flex", alignItems:"center" }}>
-              <input
-                value={chatInput}
-                onChange={e=>setChatInput(e.target.value)}
-                onKeyDown={e=>e.key==="Enter"&&!e.shiftKey&&(e.preventDefault(),sendMessage())}
-                placeholder={chatTarget==="all" ? "Message à l'équipe projet…" : `Message à ${pAgents.find(a=>a.id===chatTarget)?.name||"l'agent"}…`}
-                style={{ flex:1, border:"none", outline:"none", fontFamily:SF, fontSize:14, color:"#111827", background:"transparent" }}
-              />
+              })}
             </div>
-            <button onClick={sendMessage} disabled={!chatInput.trim()} style={{ width:34, height:34, borderRadius:"50%", background:chatInput.trim()?ACCENT:"#E5E7EB", border:"none", cursor:chatInput.trim()?"pointer":"default", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, transition:"background 0.2s" }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            </button>
+            {/* Suggestions */}
+            <div style={{ padding:"0 14px 8px", display:"flex", gap:6, overflowX:"auto", flexShrink:0 }}>
+              {["Quel est l'état d'avancement ?","Y a-t-il des blocages ?","Prépare un point de situation"].map(s=>(
+                <button key={s} onClick={()=>setChatInput(s)} style={{ fontFamily:SF, fontSize:11, color:ACCENT, background:`${ACCENT}10`, border:`1px solid ${ACCENT}25`, borderRadius:20, padding:"5px 11px", cursor:"pointer", whiteSpace:"nowrap", flexShrink:0 }}>{s}</button>
+              ))}
+            </div>
+            {/* Input */}
+            <div style={{ padding:"8px 14px 16px", background:"#fff", borderTop:"0.5px solid #E5E7EB", display:"flex", alignItems:"center", gap:8, flexShrink:0 }}>
+              <button style={{ width:34, height:34, borderRadius:10, background:"#F3F4F6", border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" stroke="#6B7280" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </button>
+              <div style={{ flex:1, background:"#F3F4F6", borderRadius:20, padding:"8px 14px", display:"flex", alignItems:"center" }}>
+                <input value={chatInput} onChange={e=>setChatInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&!e.shiftKey&&(e.preventDefault(),sendMessage())}
+                  placeholder={chatTarget==="all"?"Message à l'équipe projet…":`Message à ${pAgents.find(a=>a.id===chatTarget)?.name||"l'agent"}…`}
+                  style={{ flex:1, border:"none", outline:"none", fontFamily:SF, fontSize:14, color:"#111827", background:"transparent" }}/>
+              </div>
+              <button onClick={sendMessage} disabled={!chatInput.trim()} style={{ width:34, height:34, borderRadius:"50%", background:chatInput.trim()?ACCENT:"#E5E7EB", border:"none", cursor:chatInput.trim()?"pointer":"default", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+        {tab==="livrables" && (() => {
+          const EXT_COLOR_MAP = { pptx:"#F97316", docx:"#0EA5E9", xlsx:"#10B981", pdf:"#EF4444", html:"#7C3AED", md:"#6B7280" };
+          const liv = [
+            ...(p.rapports||[]).map(r=>({ id:"r-"+r.name, name:r.name, type:r.type.toLowerCase(), date:r.date, status:"done", progress:100, agent:"co-1", size:"2.4 Mo" })),
+            ...(p.travaux_list||[]).flatMap(t=>(t.delivery||[]).map(d=>({ id:"d-"+d, name:d, type:d.split(".").pop().toLowerCase(), date:"En cours", status:t.status, progress:t.progress, agent:t.agent, size:"—" }))),
+          ];
+          const statusCfg = { done:{label:"Livré", color:"#10B981", bg:"#DCFCE7"}, running:{label:"En cours", color:"#F59E0B", bg:"#FEF3C7"}, waiting:{label:"En attente", color:"#9CA3AF", bg:"#F3F4F6"} };
+          const LivContent = () => liv.length===0
+            ? <div style={{ textAlign:"center", color:"#9CA3AF", fontFamily:SF, fontSize:13, paddingTop:40 }}>Aucun livrable référencé</div>
+            : (<>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8, marginBottom:14 }}>
+                  {[{v:liv.length,l:"Total",c:"#111827"},{v:liv.filter(l=>l.status==="done").length,l:"Livrés",c:"#10B981"},{v:liv.filter(l=>l.status==="running").length,l:"En cours",c:"#F59E0B"}].map(k=>(
+                    <div key={k.l} style={{ background:"#fff", borderRadius:12, padding:"12px 14px", textAlign:"center", border:"0.5px solid #F3F4F6" }}>
+                      <div style={{ fontFamily:SF, fontSize:22, fontWeight:700, color:k.c }}>{k.v}</div>
+                      <div style={{ fontFamily:SF, fontSize:11, color:"#9CA3AF", marginTop:2 }}>{k.l}</div>
+                    </div>
+                  ))}
+                </div>
+                <Card>
+                  {liv.map((l,i)=>{
+                    const ext=l.type; const extColor=EXT_COLOR_MAP[ext]||"#6B7280"; const sc=statusCfg[l.status]||statusCfg.waiting; const agent=allAgents.find(a=>a.id===l.agent);
+                    return (
+                      <div key={l.id}>
+                        <div style={{ display:"flex", alignItems:"center", gap:12, padding:"13px 14px" }}>
+                          <div style={{ width:38, height:38, borderRadius:10, background:extColor+"14", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                            <span style={{ fontFamily:SF, fontSize:10, fontWeight:800, color:extColor, textTransform:"uppercase" }}>{ext}</span>
+                          </div>
+                          <div style={{ flex:1, minWidth:0 }}>
+                            <div style={{ fontFamily:SF, fontSize:13, fontWeight:600, color:"#111827", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{l.name}</div>
+                            <div style={{ display:"flex", alignItems:"center", gap:8, marginTop:3 }}>
+                              {agent && <span style={{ fontFamily:SF, fontSize:11, color:"#9CA3AF" }}>{agentEmoji(agent.name)} {agent.name.split(" ")[0]}</span>}
+                              <span style={{ fontFamily:SF, fontSize:11, color:"#C7C7CC" }}>·</span>
+                              <span style={{ fontFamily:SF, fontSize:11, color:"#9CA3AF" }}>{l.date}</span>
+                            </div>
+                            {l.status==="running" && <div style={{ height:3, background:"#F3F4F6", borderRadius:2, marginTop:6, overflow:"hidden" }}><div style={{ height:"100%", width:`${l.progress}%`, background:p.color, borderRadius:2 }}/></div>}
+                          </div>
+                          <div style={{ display:"flex", alignItems:"center", gap:8, flexShrink:0 }}>
+                            <span style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:sc.color, background:sc.bg, borderRadius:7, padding:"3px 9px" }}>{sc.label}</span>
+                            {l.status==="done" && <button style={{ width:30, height:30, borderRadius:8, background:`${ACCENT}10`, border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke={ACCENT} strokeWidth="1.8"/><circle cx="12" cy="12" r="3" stroke={ACCENT} strokeWidth="1.8"/></svg>
+                            </button>}
+                          </div>
+                        </div>
+                        {i<liv.length-1 && <Divider indent={64}/>}
+                      </div>
+                    );
+                  })}
+                </Card>
+              </>);
+          return <LivContent/>;
+        })()}
+      </div>
 
       {showAffect && (
         <div style={{ position:"absolute", inset:0, zIndex:80, background:"rgba(0,0,0,0.45)", backdropFilter:"blur(4px)", display:"flex", flexDirection:"column", justifyContent:"flex-end" }}>
@@ -2465,7 +2298,6 @@ function DeskAccueil({ agents, fil, setActiveTab, onAgent, onFil }) {
 function DeskProjets({ agents, onAgent }) {
   const [search,   setSearch]   = useState("");
   const [selProj,  setSelProj]  = useState(null);
-  const [openChat, setOpenChat] = useState(false);
   const [chatInput,  setChatInput]  = useState("");
   const [chatMessages, setChatMessages] = useState([
     { id:1, from:"agent", agentId:"co-1", agentName:"Intel Watcher", text:"Bonjour Romain. Tout avance conformément au plan. Un point d'attention sur la revue d'architecture cible.", time:"10:30" },
@@ -2505,11 +2337,11 @@ function DeskProjets({ agents, onAgent }) {
         <div style={{ background:"#fff", borderRadius:14, boxShadow:"0 1px 3px rgba(0,0,0,0.06)", overflow:"hidden" }}>
           <div style={{ display:"grid", gridTemplateColumns:"2fr 1fr 1.5fr 1fr 1fr 1fr 120px", gap:0, padding:"10px 20px", borderBottom:"0.5px solid #F3F4F6", background:"#F9FAFB" }}>
             {["Projet","Client","Avancement","Statut","Responsable","Échéance",""].map(h=>(
-              <div key={h} style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em" }}>{h}</div>
+              <div key={h} style={{ ...LABEL_SM }}>{h}</div>
             ))}
           </div>
           {shown.map((p,i)=>{
-            const badge = p.travaux.blocked>0?{l:"Bloqué",c:"#EF4444",bg:"#FEF2F2"} : p.travaux.late>2?{l:"En retard",c:"#F59E0B",bg:"#FEF3C7"} : p.travaux.risk>3?{l:"À risque",c:"#F97316",bg:"#FFF7ED"} : {l:"Sain",c:"#10B981",bg:"#DCFCE7"};
+            const badge = projBadge(p);
             const owner = OWNERS.find(o=>o.id===p.owner)||OWNERS[0];
             const isSelected = selProj?.id===p.id;
             const pAgents = allAgents.filter(a=>p.agents.includes(a.id));
@@ -2554,32 +2386,34 @@ function DeskProjets({ agents, onAgent }) {
         <div style={{ fontFamily:SF, fontSize:12, color:"#9CA3AF", marginTop:10 }}>1–{shown.length} sur {INIT_PROJETS.length} projets</div>
       </div>
 
-      {/* Side panel — project detail or chat */}
+      {/* Project modal — centered overlay */}
       {selProj && (
-        <div style={{ width:400, borderLeft:"0.5px solid #E5E7EB", background:"#fff", display:"flex", flexDirection:"column", flexShrink:0, animation:"slideInRight 0.2s ease" }}>
-          {/* Panel header */}
-          <div style={{ padding:"20px 20px 0", borderBottom:"0.5px solid #F3F4F6", flexShrink:0 }}>
-            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
-              <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                <div style={{ width:32, height:32, borderRadius:9, background:selProj.color+"18", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}>{selProj.logo}</div>
-                <div>
-                  <div style={{ fontFamily:SF, fontSize:14, fontWeight:700, color:"#111827" }}>{selProj.name}</div>
-                  <div style={{ fontFamily:SF, fontSize:11, color:"#9CA3AF" }}>{selProj.client}</div>
+        <>
+          {/* Backdrop */}
+          <div onClick={()=>setSelProj(null)} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.35)", zIndex:200, backdropFilter:"blur(2px)" }}/>
+
+          {/* Modal */}
+          <div style={{ position:"fixed", top:"5%", left:"50%", transform:"translateX(-50%)", width:"min(1100px, 92vw)", height:"90vh", background:"#fff", borderRadius:20, boxShadow:"0 24px 80px rgba(0,0,0,0.18)", zIndex:201, display:"flex", flexDirection:"column", overflow:"hidden", animation:"fadeIn 0.18s ease" }}>
+
+            {/* Modal header */}
+            <div style={{ padding:"20px 28px 0", borderBottom:"0.5px solid #F3F4F6", flexShrink:0, background:"#fff" }}>
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:14 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+                  <div style={{ width:38, height:38, borderRadius:11, background:selProj.color+"18", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22 }}>{selProj.logo}</div>
+                  <div>
+                    <div style={{ fontFamily:SF, fontSize:17, fontWeight:700, color:"#111827", letterSpacing:"-0.02em" }}>{selProj.name}</div>
+                    <div style={{ fontFamily:SF, fontSize:12, color:"#9CA3AF" }}>{selProj.client} · {selProj.period}</div>
+                  </div>
+                  <span style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#10B981", background:"#DCFCE7", borderRadius:8, padding:"3px 10px", marginLeft:4 }}>En cours</span>
                 </div>
+                <button onClick={()=>setSelProj(null)} style={{ width:32, height:32, borderRadius:8, background:"#F3F4F6", border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", color:"#6B7280", fontSize:18, lineHeight:1 }}>×</button>
               </div>
-              <button onClick={()=>setSelProj(null)} style={{ background:"none", border:"none", cursor:"pointer", color:"#9CA3AF", fontSize:20, lineHeight:1 }}>×</button>
-            </div>
-            {/* Tab toggle */}
-            <div style={{ display:"flex", gap:0 }}>
-              {["Détail","Chat équipe"].map(t=>{
-                const active = (t==="Chat équipe")===openChat;
-                return <button key={t} onClick={()=>setOpenChat(t==="Chat équipe")} style={{ fontFamily:SF, fontSize:13, fontWeight:active?600:400, color:active?ACCENT:"#6B7280", background:"none", border:"none", cursor:"pointer", padding:"8px 12px", borderBottom:active?`2px solid ${ACCENT}`:"2px solid transparent" }}>{t}</button>;
-              })}
-            </div>
           </div>
 
-          {/* Detail tab — full tabbed view matching mobile */}
-          {!openChat && (
+            {/* Modal body — 2 columns */}
+            <div style={{ flex:1, display:"flex", overflow:"hidden" }}>
+
+            {/* Detail */}
             <div style={{ flex:1, overflowY:"auto" }}>
               <ProjetDetail
                 projet={selProj}
@@ -2590,56 +2424,9 @@ function DeskProjets({ agents, onAgent }) {
                 embedded={true}
               />
             </div>
-          )}
-
-          {/* Chat tab */}
-          {openChat && (
-            <>
-              {/* Agent pills */}
-              <div style={{ padding:"10px 16px 8px", borderBottom:"0.5px solid #F3F4F6", display:"flex", gap:6, overflowX:"auto", flexShrink:0 }}>
-                {Object.values(agents).flat().filter(a=>selProj.agents.includes(a.id)).map(a=>{
-                  const d=DEPTS.find(x=>x.id===a.dept)||DEPTS[0];
-                  return <span key={a.id} style={{ fontFamily:SF, fontSize:11, fontWeight:600, color:d.color, background:d.light, borderRadius:20, padding:"3px 10px", whiteSpace:"nowrap", flexShrink:0 }}>{agentEmoji(a.name)} {a.name.split(" ")[0]}</span>;
-                })}
-              </div>
-              {/* Messages */}
-              <div style={{ flex:1, overflowY:"auto", padding:"12px 16px", display:"flex", flexDirection:"column", gap:10 }}>
-                {chatMessages.map(m=>{
-                  const isUser=m.from==="user";
-                  const agent=Object.values(agents).flat().find(a=>a.id===m.agentId);
-                  const d=agent?DEPTS.find(x=>x.id===agent.dept)||DEPTS[0]:DEPTS[0];
-                  return (
-                    <div key={m.id} style={{ display:"flex", flexDirection:"column", alignItems:isUser?"flex-end":"flex-start" }}>
-                      {!isUser && <div style={{ fontFamily:SF, fontSize:10, fontWeight:600, color:d.color, marginBottom:3, marginLeft:32 }}>{m.agentName}</div>}
-                      <div style={{ display:"flex", alignItems:"flex-end", gap:7, maxWidth:"88%", flexDirection:isUser?"row-reverse":"row" }}>
-                        {!isUser && <div style={{ width:24, height:24, borderRadius:7, background:d.light, display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, flexShrink:0 }}>{agentEmoji(agent?.name||"")}</div>}
-                        {isUser && <img src={AVATAR_RV} alt="Romain Villar" style={{ width:22, height:22, borderRadius:"50%", objectFit:"cover", flexShrink:0, display:"block" }}/>}
-                        <div style={{ background:isUser?ACCENT:"#F3F4F6", color:isUser?"#fff":"#111827", borderRadius:isUser?"12px 12px 3px 12px":"12px 12px 12px 3px", padding:"9px 12px", fontFamily:SF, fontSize:13, lineHeight:1.45 }}>{m.text}</div>
-                      </div>
-                      <span style={{ fontFamily:SF, fontSize:10, color:"#C7C7CC", marginTop:2, [isUser?"marginRight":"marginLeft"]:30 }}>{m.time}</span>
-                    </div>
-                  );
-                })}
-              </div>
-              {/* Quick suggestions */}
-              <div style={{ padding:"0 12px 6px", display:"flex", gap:6, overflowX:"auto", flexShrink:0 }}>
-                {["État d'avancement ?","Blocages ?","Prépare un résumé"].map(s=>(
-                  <button key={s} onClick={()=>setChatInput(s)} style={{ fontFamily:SF, fontSize:11, color:ACCENT, background:`${ACCENT}10`, border:`1px solid ${ACCENT}25`, borderRadius:20, padding:"4px 10px", cursor:"pointer", whiteSpace:"nowrap", flexShrink:0 }}>{s}</button>
-                ))}
-              </div>
-              {/* Input */}
-              <div style={{ padding:"8px 12px 16px", borderTop:"0.5px solid #F3F4F6", display:"flex", alignItems:"center", gap:8, flexShrink:0 }}>
-                <input value={chatInput} onChange={e=>setChatInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&sendMsg(selProj)}
-                  placeholder="Message à l'équipe projet…"
-                  style={{ flex:1, background:"#F3F4F6", border:"none", outline:"none", borderRadius:20, padding:"8px 14px", fontFamily:SF, fontSize:13, color:"#111827" }}/>
-                <button onClick={()=>sendMsg(selProj)} disabled={!chatInput.trim()}
-                  style={{ width:34, height:34, borderRadius:"50%", background:chatInput.trim()?ACCENT:"#E5E7EB", border:"none", cursor:chatInput.trim()?"pointer":"default", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, transition:"background 0.2s" }}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                </button>
-              </div>
-            </>
-          )}
-        </div>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
@@ -2687,7 +2474,7 @@ function DeskAgents({ agents, setAgents, onAgent }) {
       <div style={{ background:"#fff", borderRadius:14, boxShadow:"0 1px 3px rgba(0,0,0,0.06)", overflow:"hidden" }}>
         <div style={{ display:"grid", gridTemplateColumns:"2fr 1fr 1fr 1fr 1fr 1fr 80px", gap:0, padding:"10px 20px", borderBottom:"0.5px solid #F3F4F6", background:"#F9FAFB" }}>
           {["Agent","Type","Service","Statut","Exécutions (24h)","Taux de succès","Actif"].map(h=>(
-            <div key={h} style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em" }}>{h}</div>
+            <div key={h} style={{ ...LABEL_SM }}>{h}</div>
           ))}
         </div>
         {shown.map((a,i)=>{
@@ -2823,7 +2610,7 @@ function DeskSources() {
       <div style={{ background:"#fff", borderRadius:14, boxShadow:"0 1px 3px rgba(0,0,0,0.06)", overflow:"hidden" }}>
         <div style={{ display:"grid", gridTemplateColumns:"2fr 1fr 1fr 1fr 1fr 1fr", gap:0, padding:"10px 20px", borderBottom:"0.5px solid #F3F4F6", background:"#F9FAFB" }}>
           {["Source","Type","Connecteur","Qualité","Statut","Dernière sync"].map(h=>(
-            <div key={h} style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em" }}>{h}</div>
+            <div key={h} style={{ ...LABEL_SM }}>{h}</div>
           ))}
         </div>
         {ALL_SOURCES.map((s,i)=>{
@@ -2898,7 +2685,7 @@ function DeskFil({ fil, setFil, onAction }) {
                       <AgentIcon name={item.agent} dept={item.dept} size={14}/>
                       {item.agent}
                     </span>
-                    <DeptTag dept={item.dept}/>
+                    <span style={{ fontFamily:SF, fontSize:11, fontWeight:600, color:ACCENT, background:`${ACCENT}10`, borderRadius:6, padding:"1px 7px" }}>{item.mission}</span>
                     {item.file && <span style={{ fontFamily:SF, fontSize:12, color:"#9CA3AF" }}>📎 {item.file}</span>}
                     {item.deadline && <span style={{ fontFamily:SF, fontSize:12, color:"#EF4444", fontWeight:600 }}>⏱ {item.deadline}</span>}
                   </div>
@@ -3091,7 +2878,7 @@ function DesktopApp({ activeTab, setActiveTab, agents, setAgents, fil, setFil, f
           {!sidebarCollapsed && (
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ fontFamily:SF, fontSize:12, fontWeight:600, color:"#111827", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>Romain Villar</div>
-              <div style={{ fontFamily:SF, fontSize:10, color:"#9CA3AF" }}>Associé</div>
+              <div style={{ fontFamily:SF, fontSize:10, color:"#9CA3AF" }}>Associé Tech4Business</div>
             </div>
           )}
           {!sidebarCollapsed && (
@@ -3107,17 +2894,11 @@ function DesktopApp({ activeTab, setActiveTab, agents, setAgents, fil, setFil, f
       <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden" }}>
         {/* Top bar */}
         <div style={{ height:56, background:"#fff", borderBottom:"0.5px solid #E5E7EB", display:"flex", alignItems:"center", padding:"0 24px", gap:16, flexShrink:0 }}>
-          <div style={{ flex:1, background:"#F3F4F6", borderRadius:10, padding:"7px 14px", display:"flex", alignItems:"center", gap:10, maxWidth:480 }}>
+          <div style={{ flex:1, background:"#fff", border:"1px solid #E5E7EB", borderRadius:10, padding:"7px 14px", display:"flex", alignItems:"center", gap:10, maxWidth:480 }}>
             <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="6.5" stroke="#9CA3AF" strokeWidth="1.8"/><path d="M13.5 13.5L18 18" stroke="#9CA3AF" strokeWidth="1.8" strokeLinecap="round"/></svg>
             <input placeholder="Rechercher un projet, un agent, une source…" style={{ border:"none", outline:"none", fontFamily:SF, fontSize:13, color:"#111827", background:"transparent", flex:1 }}/>
-            <span style={{ fontFamily:SF, fontSize:11, color:"#C7C7CC", background:"#E5E7EB", borderRadius:5, padding:"2px 6px" }}>⌘ K</span>
+            <span style={{ fontFamily:SF, fontSize:11, color:"#C7C7CC", background:"#F3F4F6", borderRadius:5, padding:"2px 6px" }}>⌘ K</span>
           </div>
-          <div style={{ marginLeft:"auto", display:"flex", alignItems:"center", gap:10 }}>
-            <button style={{ position:"relative", width:34, height:34, borderRadius:9, background:"#F3F4F6", border:"none", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" stroke="#6B7280" strokeWidth="1.8" strokeLinecap="round"/></svg>
-              {filPending>0 && <span style={{ position:"absolute", top:5, right:5, width:7, height:7, borderRadius:"50%", background:"#EF4444", border:"1.5px solid #fff" }}/>}
-            </button>
-            <img src={AVATAR_RV} alt="Romain Villar" style={{ width:32, height:32, borderRadius:"50%", objectFit:"cover", cursor:"pointer", display:"block" }}/>
           </div>
         </div>
 
@@ -3149,6 +2930,8 @@ function DesktopApp({ activeTab, setActiveTab, agents, setAgents, fil, setFil, f
 }
 
 // ─── CHAT SCREEN ──────────────────────────────────────────────────────────────
+
+function ChatScreen({ agents }) {
 
 const MODELS = [
   { id:"claude-sonnet", label:"Claude Sonnet 4", provider:"Anthropic", badge:"Recommandé", color:"#F97316" },
@@ -3183,8 +2966,6 @@ const CHAT_HISTORY = {
     ]},
   ],
 };
-
-function ChatScreen({ agents }) {
   const [selProject,   setSelProject]   = useState("all");
   const [selConv,      setSelConv]      = useState(null);
   const [messages,     setMessages]     = useState([]);
@@ -3192,7 +2973,6 @@ function ChatScreen({ agents }) {
   const [selModel,     setSelModel]     = useState("claude-sonnet");
   const [webAccess,    setWebAccess]    = useState(true);
   const [showSettings, setShowSettings] = useState(false); // false | "connectors" | "model"
-  const [showHistory,  setShowHistory]  = useState(true);
   const [attachments,  setAttachments]  = useState([]);
   const [selSources,   setSelSources]   = useState(["f1","f2","f3"]);
   const [isTyping,     setIsTyping]     = useState(false);
@@ -3218,16 +2998,13 @@ function ChatScreen({ agents }) {
 
   const toggleSource = (id) => setSelSources(prev=>prev.includes(id)?prev.filter(x=>x!==id):[...prev,id]);
 
-
   return (
     <div style={{ flex:1, display:"flex", overflow:"hidden", background:"#F9FAFB", fontFamily:SF }}>
-
-      {/* ── LEFT PANEL — History + Settings ── */}
       <div style={{ width:260, borderRight:"0.5px solid #E5E7EB", background:"#fff", display:"flex", flexDirection:"column", flexShrink:0, overflow:"hidden" }}>
 
         {/* Project selector */}
         <div style={{ padding:"16px 14px 12px", borderBottom:"0.5px solid #F3F4F6" }}>
-          <div style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em", marginBottom:8 }}>Contexte projet</div>
+          <div style={{ ...LABEL_SM, marginBottom:8 }}>Contexte projet</div>
           <select value={selProject} onChange={e=>{ setSelProject(e.target.value); setSelConv(null); setMessages([]); setShowHistory(true); }}
             style={{ width:"100%", background:"#F3F4F6", border:"none", borderRadius:9, padding:"8px 10px", fontFamily:SF, fontSize:13, color:"#111827", cursor:"pointer", outline:"none" }}>
             <option value="all">Tous les projets</option>
@@ -3246,7 +3023,7 @@ function ChatScreen({ agents }) {
         {/* Conversation history */}
         <div style={{ flex:1, overflowY:"auto" }}>
           <div style={{ padding:"10px 14px 6px" }}>
-            <div style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em" }}>
+            <div style={{ ...LABEL_SM }}>
               Historique {currentProj?`— ${currentProj.name}`:"— Tous les projets"}
             </div>
           </div>
@@ -3309,8 +3086,6 @@ function ChatScreen({ agents }) {
           )}
         </div>
       </div>
-
-      {/* ── MAIN CHAT AREA ── */}
       <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden" }}>
 
         {/* Chat top bar */}
@@ -3457,7 +3232,7 @@ function ChatScreen({ agents }) {
                   <>
                     <div onClick={()=>setShowSettings(false)} style={{ position:"fixed", inset:0, zIndex:9998 }}/>
                     <div style={{ position:"absolute", bottom:"calc(100% + 8px)", left:0, background:"#fff", borderRadius:12, boxShadow:"0 8px 30px rgba(0,0,0,0.18)", border:"0.5px solid #E5E7EB", padding:"8px", minWidth:220, zIndex:9999 }}>
-                      <div style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em", padding:"4px 8px 8px" }}>Connecteurs actifs</div>
+                      <div style={{ ...LABEL_SM, padding:"4px 8px 8px" }}>Connecteurs actifs</div>
                       {ALL_SOURCES.map(s=>(
                         <div key={s.id} onClick={()=>toggleSource(s.id)}
                           style={{ display:"flex", alignItems:"center", gap:9, padding:"8px 8px", borderRadius:8, cursor:"pointer", background:selSources.includes(s.id)?`${ACCENT}08`:"transparent" }}>
@@ -3487,7 +3262,7 @@ function ChatScreen({ agents }) {
                   <>
                     <div onClick={()=>setShowSettings(false)} style={{ position:"fixed", inset:0, zIndex:9998 }}/>
                     <div style={{ position:"absolute", bottom:"calc(100% + 8px)", right:0, background:"#fff", borderRadius:12, boxShadow:"0 8px 30px rgba(0,0,0,0.18)", border:"0.5px solid #E5E7EB", padding:"8px", minWidth:240, zIndex:9999 }}>
-                      <div style={{ fontFamily:SF, fontSize:11, fontWeight:700, color:"#9CA3AF", textTransform:"uppercase", letterSpacing:"0.04em", padding:"4px 8px 8px" }}>Modèle</div>
+                      <div style={{ ...LABEL_SM, padding:"4px 8px 8px" }}>Modèle</div>
                       {MODELS.map(m=>(
                         <div key={m.id} onClick={()=>{ setSelModel(m.id); setShowSettings(false); }}
                           style={{ display:"flex", alignItems:"center", gap:10, padding:"9px 8px", borderRadius:8, cursor:"pointer", background:selModel===m.id?`${ACCENT}08`:"transparent", border:selModel===m.id?`1px solid ${ACCENT}20`:"1px solid transparent", marginBottom:2 }}>
